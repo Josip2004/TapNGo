@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TapNGo")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2ec1ed0d26f46464001cbddcc3e005e0380045c6")]
 [assembly: System.Reflection.AssemblyProductAttribute("TapNGo")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TapNGo")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

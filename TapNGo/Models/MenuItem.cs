@@ -21,7 +21,6 @@ public partial class MenuItem
 
     public string? Description { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
     public decimal Price { get; set; }
 
     [Column("Image_url")]

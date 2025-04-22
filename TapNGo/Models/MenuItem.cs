@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace TapNGo.Models;
 
@@ -21,10 +18,11 @@ public partial class MenuItem
 
     public string? Description { get; set; }
 
+    [Column(TypeName = "decimal(18, 0)")]
     public decimal Price { get; set; }
 
     [Column("Image_url")]
-    [StringLength(255)]
+    [StringLength(256)]
     public string? ImageUrl { get; set; }
 
     [ForeignKey("MenuCategoryId")]

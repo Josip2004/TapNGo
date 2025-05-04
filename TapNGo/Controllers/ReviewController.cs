@@ -19,67 +19,102 @@ namespace TapNGo.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ReviewResponseDTO>> GetAllReviews([FromQuery] int? userId)
         {
-            var reviews = _context.Reviews
-            .Include (r => r.User)
-            .Where (r => !userId.HasValue || r.UserId == userId.Value)
-            .Select(r => new ReviewResponseDTO { 
-                Rating = r.Rating,
-                Comment = r.Comment
-            })
-            .ToList(); 
+            try
+            {
 
-            return Ok(reviews);
+                var reviews = _context.Reviews
+                .Select(r => new ReviewResponseDTO
+                {
+                    Rating = r.Rating,
+                    Comment = r.Comment
+                })
+                .ToList();
+
+                return Ok(reviews);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
 
         public ActionResult<ReviewResponseDTO> GetReviewById(int idReview)
         {
-            var review = _context.Reviews
-                .FirstOrDefault(r => r.Id == idReview);
+            try
+            {
+                var review = _context.Reviews
+                       .FirstOrDefault(r => r.Id == idReview);
 
-            if (review == null) { 
-                
-                return NotFound();
+                if (review == null)
+                {
+
+                    return NotFound();
+                }
+                return Ok(review);
             }
-            return Ok(review);
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost]
         public ActionResult<ReviewCreateDTO> CreateReview([FromBody] ReviewCreateDTO dto)
         {
-            var user = _context.Users.Find(dto.UserId);
-            if (user == null) return BadRequest("User not exists");
+            try
+            {
 
-            var order = _context.Orders.Find(dto.OrderId);
-            if (order == null) return BadRequest("Order not exists");
+                var user = _context.Users.Find(dto.UserId);
+                if (user == null) return BadRequest("User not exists");
 
-            if (order.UserId != dto.UserId) return BadRequest("User can´t review someone else´s order");
+                var order = _context.Orders.Find(dto.OrderId);
+                if (order == null) return BadRequest("Order not exists");
 
-            Review review = new();
-            review.Order = order;
-            review.UserId = dto.UserId;
-            review.Rating = dto.Rating;
-            review.Comment = dto.Comment;
+                if (order.UserId != dto.UserId) return BadRequest("User can´t review someone else´s order");
 
-            _context.Reviews.Add(review);
-            _context.SaveChanges();
+                Review review = new();
+                review.Order = order;
+                review.UserId = dto.UserId;
+                review.Rating = dto.Rating;
+                review.Comment = dto.Comment;
 
-            return CreatedAtAction(nameof(GetReviewById), new { idReview = review.Id }, null);
+                _context.Reviews.Add(review);
+                _context.SaveChanges();
+
+                return CreatedAtAction(nameof(GetReviewById), new { idReview = review.Id }, null);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
 
         }
         [HttpDelete("{id}")]
         public ActionResult<ReviewResponseDTO> DeleteReview(int id)
         {
-            var review = _context.Reviews.FirstOrDefault(r => r.Id == id);
+            try
+            {
 
-            if (review == null)
-                return NotFound();
+                var review = _context.Reviews.FirstOrDefault(r => r.Id == id);
 
-            _context.Reviews.Remove(review);
-            _context.SaveChanges();
+                if (review == null)
+                    return NotFound();
 
-            return NoContent();
+                _context.Reviews.Remove(review);
+                _context.SaveChanges();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

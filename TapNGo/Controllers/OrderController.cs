@@ -86,7 +86,10 @@ namespace TapNGo.Controllers
             {
                 var user = _context.Users.Find(dto.UserId);
                 if (user == null)
-                    return BadRequest("User not found");
+                    return BadRequest("User not found.");
+
+                if (dto.OrderItems == null || !dto.OrderItems.Any())
+                    return BadRequest("Order must contain at least one item.");
 
                 decimal totalPrice = 0;
                 var orderItems = new List<OrderItem>();
@@ -95,7 +98,7 @@ namespace TapNGo.Controllers
                 {
                     var menuItem = _context.MenuItems.Find(item.MenuItemId);
                     if (menuItem == null)
-                        return BadRequest($"MenuItem with ID {item.MenuItemId} not found");
+                        return BadRequest($"MenuItem with ID {item.MenuItemId} not found.");
 
                     totalPrice += menuItem.Price * item.Quantity;
 
@@ -129,9 +132,8 @@ namespace TapNGo.Controllers
                     {
                         MenuItemId = oi.MenuItemId,
                         Quantity = oi.Quantity ?? 1,
-                        MenuItemName = oi.MenuItem?.Name // Assuming this property exists
+                        MenuItemName = oi.MenuItem?.Name // Assuming navigation property is loaded or lazy loading is on
                     }).ToList()
-
                 };
 
                 return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, orderResponse);
@@ -141,6 +143,7 @@ namespace TapNGo.Controllers
                 return StatusCode(500, $"An error occurred while creating the order: {ex.Message}");
             }
         }
+
 
         // PUT: api/Order/5
         [HttpPut("{id}")]
@@ -158,27 +161,30 @@ namespace TapNGo.Controllers
                 order.Status = dto.Status;
                 order.Note = dto.Note;
 
+                // Only process OrderItems if provided
                 if (dto.OrderItems != null && dto.OrderItems.Any())
                 {
-                    _context.OrderItems.RemoveRange(order.OrderItems);
-                    order.OrderItems.Clear();
-
                     decimal newTotal = 0;
+                    var newOrderItems = new List<OrderItem>();
+
                     foreach (var item in dto.OrderItems)
                     {
                         var menuItem = _context.MenuItems.Find(item.MenuItemId);
                         if (menuItem == null)
-                            return BadRequest($"MenuItem with ID {item.MenuItemId} not found");
+                            return BadRequest($"MenuItem with ID {item.MenuItemId} not found.");
 
                         newTotal += menuItem.Price * item.Quantity;
 
-                        order.OrderItems.Add(new OrderItem
+                        newOrderItems.Add(new OrderItem
                         {
                             MenuItemId = item.MenuItemId,
                             Quantity = item.Quantity
                         });
                     }
 
+                    // Replace the existing items with the new ones
+                    _context.OrderItems.RemoveRange(order.OrderItems);
+                    order.OrderItems = newOrderItems;
                     order.TotalPrice = newTotal;
                 }
 
@@ -190,6 +196,7 @@ namespace TapNGo.Controllers
                 return StatusCode(500, $"An error occurred while updating the order: {ex.Message}");
             }
         }
+
 
         // DELETE: api/Order/5
         [HttpDelete("{id}")]

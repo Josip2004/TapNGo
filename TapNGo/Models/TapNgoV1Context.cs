@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace TapNGo.Models;
 
@@ -28,75 +30,76 @@ public partial class TapNgoV1Context : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("name=ConnectionStrings:Default");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("server=WIN-VKT4GRUGBER;Database=TapNGoV1;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<MenuCategory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MenuCate__3214EC07C3FDA2BA");
+            entity.HasKey(e => e.Id).HasName("PK__MenuCate__3214EC0782B4CF55");
         });
 
         modelBuilder.Entity<MenuItem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__MenuItem__3214EC074174816B");
+            entity.HasKey(e => e.Id).HasName("PK__MenuItem__3214EC076B9A4596");
 
             entity.HasOne(d => d.MenuCategory).WithMany(p => p.MenuItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MenuItem__MenuCa__571DF1D5");
+                .HasConstraintName("FK__MenuItem__MenuCa__44FF419A");
 
             entity.HasOne(d => d.User).WithMany(p => p.MenuItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__MenuItem__UserId__5812160E");
+                .HasConstraintName("FK__MenuItem__UserId__45F365D3");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Order__3214EC0740D278A5");
+            entity.HasKey(e => e.Id).HasName("PK__Order__3214EC079640E0C4");
 
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Order__UserId__5070F446");
+                .HasConstraintName("FK__Order__UserId__3E52440B");
         });
 
         modelBuilder.Entity<OrderItem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderIte__3214EC07A687C1DE");
+            entity.HasKey(e => e.Id).HasName("PK__OrderIte__3214EC07735C1F18");
 
             entity.HasOne(d => d.MenuItem).WithMany(p => p.OrderItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderItem__MenuI__5BE2A6F2");
+                .HasConstraintName("FK__OrderItem__MenuI__49C3F6B7");
 
             entity.HasOne(d => d.Order).WithMany(p => p.OrderItems)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__OrderItem__Order__5AEE82B9");
+                .HasConstraintName("FK__OrderItem__Order__48CFD27E");
         });
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Review__3214EC07693647EC");
+            entity.HasKey(e => e.Id).HasName("PK__Review__3214EC07B13122CD");
 
             entity.HasOne(d => d.Order).WithMany(p => p.Reviews)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__Comment__534D60F1");
+                .HasConstraintName("FK__Review__Comment__412EB0B6");
 
             entity.HasOne(d => d.User).WithMany(p => p.Reviews)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Review__UserId__5441852A");
+                .HasConstraintName("FK__Review__UserId__4222D4EF");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC0749943FA3");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC0706C97E30");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07667891A6");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07224AE452");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Users)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__User__RoleId__4BAC3F29");
+                .HasConstraintName("FK__User__RoleId__398D8EEE");
         });
 
         OnModelCreatingPartial(modelBuilder);

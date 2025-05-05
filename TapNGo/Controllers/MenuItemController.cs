@@ -15,106 +15,125 @@ namespace TapNGo.Controllers
         {
             _context = context;
         }
+
         [HttpGet]
         public ActionResult<IEnumerable<MenuItemResponseDTO>> GetAllMenus([FromQuery] int? categoryID)
         {
-            var menu = _context.MenuItems
-                    .Include(m => m.MenuCategory)
-                    .Where(m => !categoryID.HasValue || m.MenuCategoryId == categoryID.Value)
-                    .Select(m => new MenuItemResponseDTO
-                    {
-                        Name = m.Name,
-                        Description = m.Description,
-                        Price = m.Price
-                    }).ToList();
-            
+            try
+            {
+                var menu = _context.MenuItems
+                        .Include(m => m.MenuCategory)
+                        .Where(m => !categoryID.HasValue || m.MenuCategoryId == categoryID.Value)
+                        .Select(m => new MenuItemResponseDTO
+                        {
+                            Name = m.Name,
+                            Description = m.Description,
+                            Price = m.Price,
+                            ImageUrl = m.ImageUrl
+                        }).ToList();
 
-            return Ok(menu);
+                if (!menu.Any())
+                    return NotFound();
+
+                return Ok(menu);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
-        public ActionResult<MenuItemResponseDTO> GetMenuById(int idMenuItem)
+        public ActionResult<MenuItemResponseDTO> GetMenuById(int id)
         {
-            var menuItem = _context.MenuItems
-                .Include(m => m.MenuCategory)
-                .FirstOrDefault(m => m.Id == idMenuItem);
-
-            if (menuItem == null)
+            try
             {
-                return NotFound();
-            }
+                var menuItem = _context.MenuItems
+                    .Include(m => m.MenuCategory)
+                    .FirstOrDefault(m => m.Id == id);
 
-            return Ok(menuItem);
+                if (menuItem == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(menuItem);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost]
         public ActionResult<MenuItemCreateDTO> CreateMenu([FromBody] MenuItemCreateDTO dto)
         {
-            var user = _context.MenuItems.Find(dto.UserId);
-            var category = _context.MenuItems.Find(dto.MenuCategoryId);
+            try
+            {
+                MenuItem menuItem = new()
+                {
+                    Name = dto.Name,
+                    Description = dto.Description,
+                    Price = dto.Price,
+                    UserId = dto.UserId,
+                    MenuCategoryId = dto.MenuCategoryId,
+                    ImageUrl = dto.ImageUrl
+                };
 
-            if (user != null) return BadRequest("User not found");
-            if (category != null) return BadRequest("Category not found");
+                _context.MenuItems.Add(menuItem);
+                _context.SaveChanges();
 
-            MenuItem menuItem = new();
-
-            menuItem.Name = dto.Name;
-            menuItem.Description = dto.Description;
-            menuItem.Price = dto.Price;
-
-            _context.MenuItems.Add(menuItem);   
-            _context.SaveChanges();
-
-            User userMenu = new();
-
-            userMenu.Id = menuItem.UserId;
-
-            MenuCategory categoryMenu = new MenuCategory();
-
-            categoryMenu.Id = dto.MenuCategoryId;
-
-            _context.Users.Add(userMenu);
-            _context.MenuCategories.Add(categoryMenu);
-            _context.SaveChanges();
-
-            return CreatedAtAction(nameof(GetMenuById), new { id = menuItem.Id }, menuItem);
+                return CreatedAtAction(nameof(GetMenuById), new { id = menuItem.Id }, menuItem);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpPut]
-        public ActionResult<MenuItemUpdateDTO> UpdateMenu(int id,
-            [FromBody] MenuItemUpdateDTO dto)
+        [HttpPut("{id}")]
+        public ActionResult<MenuItemUpdateDTO> UpdateMenu(int id, [FromBody] MenuItemUpdateDTO dto)
         {
-            var existingMenu =  _context.MenuItems.Find(id);
-            if (existingMenu == null)
-                return NotFound();
+            try
+            {
+                var existingMenu = _context.MenuItems.Find(id);
+                if (existingMenu == null)
+                    return NotFound();
 
+                existingMenu.Name = dto.Name;
+                existingMenu.Description = dto.Description;
+                existingMenu.ImageUrl = dto.ImageUrl;
+                existingMenu.Price = dto.Price;
+                existingMenu.MenuCategoryId = dto.MenuCategoryId;
 
-            existingMenu.Name = dto.Name;
-            existingMenu.Description = dto.Description;
-            existingMenu.ImageUrl = dto.ImageUrl;
-            existingMenu.Price = dto.Price;
-            existingMenu.MenuCategoryId = dto.MenuCategoryId;
+                _context.SaveChanges();
 
-            _context.SaveChanges();
-
-            return NoContent();
+                return Ok(existingMenu);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public ActionResult<MenuItemResponseDTO> DeleteMenuItem(int id)
         {
-            var menu = _context.MenuItems.Find(id);
-            if (menu == null)
-                return NotFound();
+            try
+            {
+                var menu = _context.MenuItems.Find(id);
+                if (menu == null)
+                    return NotFound();
 
+                _context.MenuItems.Remove(menu);
+                _context.SaveChanges();
 
-            _context.Users.RemoveRange(menu.User);
-            _context.MenuCategories.RemoveRange(menu.MenuCategory);
-            _context.MenuItems.Remove(menu);
-
-            _context.SaveChanges();
-
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

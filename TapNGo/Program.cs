@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 using TapNGo.Models;
+using TapNGo.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 // Configure Swagger with JWT auth
 builder.Services.AddSwaggerGen(option =>
 {

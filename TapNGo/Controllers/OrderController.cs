@@ -41,15 +41,18 @@ namespace TapNGo.Controllers
         }
 
         // GET: api/Order/5
-        [HttpGet("{id}")]
-        public ActionResult<OrderResponseDTO> GetOrderById(int id)
+        [HttpGet("{id?}")]
+        public ActionResult<OrderResponseDTO> GetOrderById(int? id)
         {
+            if (id == null)
+                return NotFound("Order ID must be provided.");
+
             try
             {
                 var order = _context.Orders
                     .Include(o => o.OrderItems)
                         .ThenInclude(oi => oi.MenuItem)
-                    .FirstOrDefault(o => o.Id == id);
+                    .FirstOrDefault(o => o.Id == id.Value);
 
                 if (order == null)
                     return NotFound();
@@ -65,9 +68,8 @@ namespace TapNGo.Controllers
                     {
                         MenuItemId = oi.MenuItemId,
                         Quantity = oi.Quantity ?? 1,
-                        MenuItemName = oi.MenuItem?.Name // Assuming this property exists
+                        MenuItemName = oi.MenuItem?.Name
                     }).ToList()
-
                 };
 
                 return Ok(response);
@@ -77,6 +79,7 @@ namespace TapNGo.Controllers
                 return StatusCode(500, $"An error occurred while retrieving the order: {ex.Message}");
             }
         }
+
 
         // POST: api/Order
         [HttpPost]
@@ -113,7 +116,7 @@ namespace TapNGo.Controllers
                 {
                     UserId = dto.UserId,
                     Note = dto.Note,
-                    Status = 0, // default status
+                    Status = 0, 
                     TotalPrice = totalPrice,
                     OrderItems = orderItems
                 };
@@ -132,7 +135,7 @@ namespace TapNGo.Controllers
                     {
                         MenuItemId = oi.MenuItemId,
                         Quantity = oi.Quantity ?? 1,
-                        MenuItemName = oi.MenuItem?.Name // Assuming navigation property is loaded or lazy loading is on
+                        MenuItemName = oi.MenuItem?.Name 
                     }).ToList()
                 };
 
@@ -161,7 +164,7 @@ namespace TapNGo.Controllers
                 order.Status = dto.Status;
                 order.Note = dto.Note;
 
-                // Only process OrderItems if provided
+                
                 if (dto.OrderItems != null && dto.OrderItems.Any())
                 {
                     decimal newTotal = 0;
@@ -182,7 +185,7 @@ namespace TapNGo.Controllers
                         });
                     }
 
-                    // Replace the existing items with the new ones
+                    
                     _context.OrderItems.RemoveRange(order.OrderItems);
                     order.OrderItems = newOrderItems;
                     order.TotalPrice = newTotal;

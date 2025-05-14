@@ -17,7 +17,7 @@ namespace TapNGo.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ReviewResponseDTO>> GetAllReviews([FromQuery] int? userId)
+        public ActionResult<IEnumerable<ReviewResponseDTO>> GetAllReviews()
         {
             try
             {
@@ -35,36 +35,40 @@ namespace TapNGo.Controllers
             catch (Exception ex)
             {
 
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, "Error in fetching reviews" + ex.Message);
             }
         }
 
         [HttpGet("{id}")]
 
-        public ActionResult<ReviewResponseDTO> GetReviewById(int idReview)
+        public ActionResult<ReviewResponseDTO> GetReviewById(int id)
         {
             try
             {
                 var review = _context.Reviews
-                       .FirstOrDefault(r => r.Id == idReview);
+                       .FirstOrDefault(r => r.Id == id);
 
                 if (review == null)
                 {
 
-                    return NotFound();
+                    return NotFound("Did not found any review by that id");
                 }
                 return Ok(review);
             }
             catch (Exception ex)
             {
 
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, "Error in fetching reviews by Id" + ex.Message);
             }
         }
 
         [HttpPost]
         public ActionResult<ReviewCreateDTO> CreateReview([FromBody] ReviewCreateDTO dto)
         {
+            if (dto == null)
+            {
+                return BadRequest("Invalid data");
+            }
             try
             {
 
@@ -76,21 +80,24 @@ namespace TapNGo.Controllers
 
                 if (order.UserId != dto.UserId) return BadRequest("User can´t review someone else´s order");
 
-                Review review = new();
-                review.Order = order;
-                review.UserId = dto.UserId;
-                review.Rating = dto.Rating;
-                review.Comment = dto.Comment;
+
+                var review = new Review
+                {
+                    OrderId = dto.OrderId,
+                    UserId = dto.UserId,
+                    Rating = dto.Rating,
+                    Comment = dto.Comment
+                };
 
                 _context.Reviews.Add(review);
                 _context.SaveChanges();
 
-                return CreatedAtAction(nameof(GetReviewById), new { idReview = review.Id }, null);
+                return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, null);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return BadRequest();
+                return StatusCode(500, "Error in creating review" + ex.Message);
             }
 
         }
@@ -113,7 +120,7 @@ namespace TapNGo.Controllers
             catch (Exception ex)
             {
 
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, "Error in deleting review" +  ex.Message);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TapNGo.DAL.Models;
 using TapNGo.DTOs;
 using TapNGo.Models;
 

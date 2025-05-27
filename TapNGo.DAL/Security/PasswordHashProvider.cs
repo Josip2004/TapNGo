@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
 
-namespace TapNGo.Security
+namespace TapNGo.DAL.Security
 {
     public class PasswordHashProvider
     {

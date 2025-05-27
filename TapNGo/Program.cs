@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using TapNGo.DAL.Models;
+using TapNGo.DAL.Repositories.MenuItem;
 using TapNGo.Models;
 using TapNGo.Profiles;
 

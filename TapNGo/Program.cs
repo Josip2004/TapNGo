@@ -5,7 +5,17 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 using TapNGo.DAL.Models;
+using TapNGo.DAL.Repositories.Category;
 using TapNGo.DAL.Repositories.MenuItem;
+using TapNGo.DAL.Repositories.MenuItems;
+using TapNGo.DAL.Repositories.Orders;
+using TapNGo.DAL.Repositories.Reviews;
+using TapNGo.DAL.Repositories.Users;
+using TapNGo.DAL.Services.CategoryService;
+using TapNGo.DAL.Services.MenuItemService;
+using TapNGo.DAL.Services.OrderService;
+using TapNGo.DAL.Services.ReviewService;
+using TapNGo.DAL.Services.UserService;
 using TapNGo.Models;
 using TapNGo.Profiles;
 
@@ -73,6 +83,18 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // Add EF Core DbContext
 builder.Services.AddDbContext<TapNgoV1Context>();

@@ -3,10 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TapNGo.DAL.Repositories.Category;
+using TapNGo.DAL.Repositories.MenuItems;
+using TapNGo.Models;
 
 namespace TapNGo.DAL.Services.MenuItemService
 {
-    public class MenuItemService
+    public class MenuItemService : IMenuItemService
     {
+        private readonly IMenuItemRepository _repository;
+
+        public MenuItemService(IMenuItemRepository repository)
+        {
+            _repository = repository;
+        }
+        public void CreateMenuItem(MenuItem item) => _repository.Add(item);
+
+        public void DeleteMenuItem(int id) => _repository.Delete(id);
+
+        public IEnumerable<MenuItem> GetAllMenuItems() => _repository.GetAll(); 
+
+        public MenuItem? GetMenuItem(int id) => _repository.GetById(id);
+
+        public void UpdateMenuItem(MenuItem item) => _repository.Update(item);
     }
 }

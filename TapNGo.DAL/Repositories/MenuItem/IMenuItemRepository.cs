@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TapNGo.Models;
 
-namespace TapNGo.DAL.Repositories.MenuItem
+namespace TapNGo.DAL.Repositories.MenuItems
 {
-    internal interface IMenuItemRepository
+    public interface IMenuItemRepository
     {
+        IEnumerable<MenuItem> GetAll();
+        MenuItem? GetById(int id);
+        void Add(MenuItem item);
+        void Update(MenuItem item);
+        void Delete(int id);
     }
 }

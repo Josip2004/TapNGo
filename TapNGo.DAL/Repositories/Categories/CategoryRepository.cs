@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
-using TapNGo.Models;
 
-namespace TapNGo.DAL.Repositories.Category
+namespace TapNGo.DAL.Repositories.Categories
 {
     public class CategoryRepository : ICategoryRepository
     {

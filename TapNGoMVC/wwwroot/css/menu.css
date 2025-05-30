@@ -1,0 +1,20 @@
+﻿.order-summary-bar {
+    position: fixed;
+    bottom: 60px; 
+    left: 0;
+    right: 0;
+    background-color: white;
+    border-top: 2px solid #ccc;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 999;
+    font-size: 1.1rem;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.item-block:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}

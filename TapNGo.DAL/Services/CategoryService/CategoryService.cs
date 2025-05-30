@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TapNGo.DAL.Repositories.Category;
-using TapNGo.Models;
+﻿using TapNGo.DAL.Models;
+using TapNGo.DAL.Repositories.Categories;
 
 namespace TapNGo.DAL.Services.CategoryService
 {

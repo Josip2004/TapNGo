@@ -5,8 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 using TapNGo.DAL.Models;
-using TapNGo.DAL.Repositories.Category;
-using TapNGo.DAL.Repositories.MenuItem;
+using TapNGo.DAL.Repositories.Categories;
 using TapNGo.DAL.Repositories.MenuItems;
 using TapNGo.DAL.Repositories.Orders;
 using TapNGo.DAL.Repositories.Reviews;
@@ -16,7 +15,6 @@ using TapNGo.DAL.Services.MenuItemService;
 using TapNGo.DAL.Services.OrderService;
 using TapNGo.DAL.Services.ReviewService;
 using TapNGo.DAL.Services.UserService;
-using TapNGo.Models;
 using TapNGo.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);

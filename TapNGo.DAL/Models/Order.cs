@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using TapNGo.Models;
 
-namespace TapNGo.Models;
+namespace TapNGo.DAL.Models;
 
 [Table("Order")]
 public partial class Order

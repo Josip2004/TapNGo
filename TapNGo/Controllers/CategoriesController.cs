@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using TapNGo.DAL.Models;
 using TapNGo.DTOs;
-using TapNGo.Models;
 
 namespace TapNGo.Controllers
 {

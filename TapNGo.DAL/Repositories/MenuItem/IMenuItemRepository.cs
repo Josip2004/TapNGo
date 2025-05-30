@@ -14,5 +14,6 @@ namespace TapNGo.DAL.Repositories.MenuItems
         void Add(MenuItem item);
         void Update(MenuItem item);
         void Delete(int id);
+        IEnumerable<MenuItem> GetWithCategory();
     }
 }

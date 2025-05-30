@@ -14,5 +14,6 @@ namespace TapNGo.DAL.Services.MenuItemService
         void CreateMenuItem(MenuItem item);
         void UpdateMenuItem(MenuItem item);
         void DeleteMenuItem(int id);
+        IEnumerable<MenuItem> GetWithCategory();
     }
 }

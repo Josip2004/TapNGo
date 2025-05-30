@@ -20,5 +20,7 @@ namespace TapNGo.DAL.Services.MenuItemService
         public MenuItem? GetMenuItem(int id) => _repository.GetById(id);
 
         public void UpdateMenuItem(MenuItem item) => _repository.Update(item);
+
+        public IEnumerable<MenuItem> GetWithCategory() => _repository.GetWithCategory();
     }
 }

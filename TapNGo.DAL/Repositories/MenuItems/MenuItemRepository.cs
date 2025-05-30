@@ -49,5 +49,11 @@ namespace TapNGo.DAL.Repositories.MenuItems
             _context.MenuItems.Update(item);
             _context.SaveChanges();
         }
+
+        public IEnumerable<MenuItem> GetWithCategory()
+        {
+            return _context.MenuItems
+             .Include(m => m.MenuCategory);
+        }
     }
 }

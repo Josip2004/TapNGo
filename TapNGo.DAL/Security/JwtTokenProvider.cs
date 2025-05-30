@@ -3,7 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace TapNGo.Security
+namespace TapNGo.DAL.Security
 {
     public class JwtTokenProvider
     {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TapNGo.Models;
+﻿using TapNGo.DAL.Models;
 
 namespace TapNGo.DAL.Services.UserService
 {

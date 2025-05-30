@@ -1,5 +1,4 @@
 ﻿// DTOs/OrderCreateDTO.cs
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TapNGo.DTOs

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TapNGo.DAL.Repositories.Orders;
-using TapNGo.DAL.Repositories.Reviews;
+﻿using TapNGo.DAL.Repositories.Reviews;
 using TapNGo.Models;
 
 namespace TapNGo.DAL.Services.ReviewService

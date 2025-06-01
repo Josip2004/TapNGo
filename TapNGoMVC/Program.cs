@@ -19,6 +19,17 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpContextAccessor();  
 builder.Services.AddSession();
+
+builder.Services.AddAuthentication()
+  .AddCookie(options =>
+  {
+      options.LoginPath = "/User/Login";
+      options.LogoutPath = "/User/Logout";
+      options.AccessDeniedPath = "/User/Forbidden";
+      options.SlidingExpiration = true;
+      options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+  });
+
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddDbContext<TapNgoV1Context>(options =>

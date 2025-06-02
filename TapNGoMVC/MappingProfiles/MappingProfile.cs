@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using TapNGo.DAL.Models;
+using TapNGo.DTOs;
 using TapNGo.Models;
 using TapNGoMVC.ViewModels;
 
@@ -11,6 +13,10 @@ namespace TapNGoMVC.MappingProfiles
             CreateMap<MenuItem, MenuVM>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.MenuCategory.Name))
                 .ForMember(dest => dest.Quantity, opt => opt.Ignore());
+
+
+            CreateMap<User, UserRegisterVM>().ReverseMap();
+            CreateMap<User, UserLoginVM>().ReverseMap();
         }
     }
 }

@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using TapNGo.DAL.Models;
+using TapNGo.DAL.Services.OrderService;
+using TapNGo.DAL.Services.ReviewService;
+using TapNGo.DAL.Services.UserService;
 using TapNGo.DTOs;
 using TapNGo.Models;
 
@@ -9,11 +13,17 @@ namespace TapNGo.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        private readonly TapNgoV1Context _context;
+        private readonly IReviewService _service;
+        private readonly IUserService _uservice;
+        private readonly IOrderService _oservice;
+        private readonly IMapper _mapper;
 
-        public ReviewController(TapNgoV1Context context)
+        public ReviewController(IReviewService service,IUserService userService,IOrderService orderService,IMapper mapper)
         {
-            _context = context; 
+            _service = service;
+            _uservice = userService;
+            _oservice = orderService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -22,15 +32,10 @@ namespace TapNGo.Controllers
             try
             {
 
-                var reviews = _context.Reviews
-                .Select(r => new ReviewResponseDTO
-                {
-                    Rating = r.Rating,
-                    Comment = r.Comment
-                })
-                .ToList();
+                var reviews = _service.GetAllReviews();
+                var reviewDTO = reviews.Select(r => _mapper.Map<ReviewResponseDTO>(r)).ToList();    
 
-                return Ok(reviews);
+                return Ok(reviewDTO);
             }
             catch (Exception ex)
             {
@@ -45,15 +50,17 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var review = _context.Reviews
-                       .FirstOrDefault(r => r.Id == id);
+                var review = _service.GetReview(id);
 
                 if (review == null)
                 {
 
                     return NotFound("Did not found any review by that id");
                 }
-                return Ok(review);
+
+                var dto = _mapper.Map<ReviewResponseDTO>(review);
+
+                return Ok(dto);
             }
             catch (Exception ex)
             {
@@ -72,27 +79,23 @@ namespace TapNGo.Controllers
             try
             {
 
-                var user = _context.Users.Find(dto.UserId);
-                if (user == null) return BadRequest("User not exists");
+               
+                var user = _uservice.GetUser(dto.UserId);
+                if (user == null)  return BadRequest("User not exists");
 
-                var order = _context.Orders.Find(dto.OrderId);
-                if (order == null) return BadRequest("Order not exists");
+                var order = _oservice.GetOrder(dto.OrderId);
+                if (order == null) return BadRequest("Order not exist");
 
                 if (order.UserId != dto.UserId) return BadRequest("User can´t review someone else´s order");
 
 
-                var review = new Review
-                {
-                    OrderId = dto.OrderId,
-                    UserId = dto.UserId,
-                    Rating = dto.Rating,
-                    Comment = dto.Comment
-                };
+                var review = _mapper.Map<Review>(dto);
 
-                _context.Reviews.Add(review);
-                _context.SaveChanges();
+                _service.CreateReview(review);
 
-                return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, null);
+                var respone = _mapper.Map<ReviewCreateDTO>(review);
+
+                return CreatedAtAction(nameof(GetReviewById), new { id = review.Id }, respone);
             }
             catch (Exception ex)
             {
@@ -107,20 +110,19 @@ namespace TapNGo.Controllers
             try
             {
 
-                var review = _context.Reviews.FirstOrDefault(r => r.Id == id);
+                var review = _service.GetReview(id);
 
                 if (review == null)
                     return NotFound();
 
-                _context.Reviews.Remove(review);
-                _context.SaveChanges();
+                _service.DeleteReview(id);
 
                 return NoContent();
             }
             catch (Exception ex)
             {
 
-                return StatusCode(500, "Error in deleting review" +  ex.Message);
+                return StatusCode(500, "Error in deleting review" + ex.Message);
             }
         }
     }

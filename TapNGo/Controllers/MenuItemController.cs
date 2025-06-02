@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
+using TapNGo.DAL.Services.MenuItemService;
 using TapNGo.DTOs;
 using TapNGo.Models;
 
@@ -10,11 +12,13 @@ namespace TapNGo.Controllers
     [ApiController]
     public class MenuItemController : ControllerBase
     {
-        private readonly TapNgoV1Context _context;
+        private readonly IMenuItemService _service;
+        private readonly IMapper _mapper;
 
-        public MenuItemController(TapNgoV1Context context)
+        public MenuItemController(IMenuItemService service, IMapper mapper)
         {
-            _context = context;
+            _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -22,21 +26,16 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var menu = _context.MenuItems
-                        .Include(m => m.MenuCategory)
-                        .Where(m => !categoryID.HasValue || m.MenuCategoryId == categoryID.Value)
-                        .Select(m => new MenuItemResponseDTO
-                        {
-                            Name = m.Name,
-                            Description = m.Description,
-                            Price = m.Price,
-                            ImageUrl = m.ImageUrl
-                        }).ToList();
+                var menu = _service.GetAllMenuItems();
+                if (categoryID != null)
+                    menu = menu.Where(m => m.Id == categoryID.Value);
 
-                if (!menu.Any())
+               var dtos = menu.Select(m => _mapper.Map<MenuItemResponseDTO>(m)).ToList();
+
+                if (!dtos.Any())
                     return NotFound();
 
-                return Ok(menu);
+                return Ok(dtos);
             }
             catch (Exception ex)
             {
@@ -49,16 +48,17 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var menuItem = _context.MenuItems
-                    .Include(m => m.MenuCategory)
-                    .FirstOrDefault(m => m.Id == id);
+                var menuitem = _service.GetMenuItem(id);
 
-                if (menuItem == null)
+                if (menuitem == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(menuItem);
+
+                var dto = _mapper.Map<MenuItemCreateDTO>(menuitem);
+
+                return Ok(dto);
             }
             catch (Exception ex)
             {
@@ -69,22 +69,20 @@ namespace TapNGo.Controllers
         [HttpPost]
         public ActionResult<MenuItemCreateDTO> CreateMenu([FromBody] MenuItemCreateDTO dto)
         {
+            if (dto == null)
+                return BadRequest("Invalid data");
+
             try
             {
-                MenuItem menuItem = new()
-                {
-                    Name = dto.Name,
-                    Description = dto.Description,
-                    Price = dto.Price,
-                    UserId = dto.UserId,
-                    MenuCategoryId = dto.MenuCategoryId,
-                    ImageUrl = dto.ImageUrl
-                };
+                var menuItem = _mapper.Map<MenuItem>(dto);
 
-                _context.MenuItems.Add(menuItem);
-                _context.SaveChanges();
+                _service.CreateMenuItem(menuItem);
 
-                return CreatedAtAction(nameof(GetMenuById), new { id = menuItem.Id }, menuItem);
+                var createdMenuItem = _service.GetMenuItem(menuItem.Id);
+
+                var createdDTO = _mapper.Map<MenuItemCreateDTO>(createdMenuItem);
+
+                return CreatedAtAction(nameof(GetMenuById), new { id = menuItem.Id }, createdDTO);
             }
             catch (Exception ex)
             {
@@ -97,17 +95,15 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var existingMenu = _context.MenuItems.Find(id);
+                var existingMenu = _service.GetMenuItem(id);
                 if (existingMenu == null)
                     return NotFound();
 
-                existingMenu.Name = dto.Name;
-                existingMenu.Description = dto.Description;
-                existingMenu.ImageUrl = dto.ImageUrl;
-                existingMenu.Price = dto.Price;
-                existingMenu.MenuCategoryId = dto.MenuCategoryId;
+                _mapper.Map(dto, existingMenu);
 
-                _context.SaveChanges();
+                _service.UpdateMenuItem(existingMenu);
+
+                var updatedDTO = _mapper.Map<MenuItemUpdateDTO>(existingMenu);
 
                 return Ok(existingMenu);
             }
@@ -122,12 +118,11 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var menu = _context.MenuItems.Find(id);
+                var menu = _service.GetMenuItem(id);
                 if (menu == null)
                     return NotFound();
 
-                _context.MenuItems.Remove(menu);
-                _context.SaveChanges();
+                _service.DeleteMenuItem(id);
 
                 return NoContent();
             }

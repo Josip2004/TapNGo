@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TapNGo.DAL.Models;
 using TapNGo.DTOs;
+using TapNGo.Models;
 
 namespace TapNGo.Profiles
 {
@@ -14,6 +15,13 @@ namespace TapNGo.Profiles
 
             CreateMap<User, UserLoginDto>().ReverseMap();
             CreateMap<User, UserRegisterDto>().ReverseMap();
+
+            CreateMap<MenuItem, MenuItemResponseDTO>().ReverseMap();
+            CreateMap<MenuItem, MenuItemCreateDTO>().ReverseMap();
+            CreateMap<MenuItem, MenuItemUpdateDTO>().ReverseMap();
+
+            CreateMap<Review, ReviewResponseDTO>().ReverseMap();
+            CreateMap<Review, ReviewCreateDTO>().ReverseMap();
         }
     }
 }

@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@{
+    var userName = ViewContext.HttpContext.User?.Identity?.Name;
+    var isLoggedIn = ViewContext.HttpContext.User?.Identity?.IsAuthenticated ?? false;
+    var firstName = ViewContext.HttpContext.User?.FindFirst("FirstName")?.Value;
+    var lastName = ViewContext.HttpContext.User?.FindFirst("LastName")?.Value;
+    var role = ViewContext.HttpContext.User?.FindFirst(ClaimTypes.Role)?.Value;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,11 +32,24 @@
                     </div>
                 </form>
 
-                <button class="btn btn-outline-light flex-shrink-0" type="button">Košarica</button>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-light flex-shrink-0" type="button">Košarica</button>
 
+                    @if (!isLoggedIn)
+                    {
+                        <a class="btn btn-outline-light flex-shrink-0" asp-controller="User" asp-action="Login">Login</a>
+                        <a class="btn btn-outline-light flex-shrink-0" asp-controller="User" asp-action="Register">Register</a>
+                    }
+                    else
+                    {
+                        <span class="badge bg-light text-dark">@firstName @lastName (@role)</span>
+                        <a class="btn btn-outline-light flex-shrink-0" asp-controller="User" asp-action="Logout">Logout</a>
+                    }
+                </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -80,6 +102,7 @@
             </button>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

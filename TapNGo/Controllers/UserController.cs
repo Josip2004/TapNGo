@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
 using TapNGo.DAL.Security;
+using TapNGo.DAL.Services.UserService;
+using AutoMapper;
 
 namespace TapNGo.Controllers
 {
@@ -11,12 +13,14 @@ namespace TapNGo.Controllers
     public class UserController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly TapNgoV1Context _context;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public UserController(IConfiguration configuration, TapNgoV1Context context)
+        public UserController(IConfiguration configuration,IMapper mapper, IUserService userService)
         {
             _configuration = configuration;
-            _context = context;
+            _mapper = mapper;
+            _userService = userService;
         }
 
         [HttpPost("[action]")]
@@ -26,7 +30,7 @@ namespace TapNGo.Controllers
             {
                 // Check if there is such a username in the database already
                 var trimmedUsername = registerDto.Username.Trim();
-                if (_context.Users.Any(x => x.Username.Equals(trimmedUsername)))
+                if (_userService.GetAllUsers().Any(x => x.Username.Equals(trimmedUsername)))
                     return BadRequest($"Username {trimmedUsername} already exists");
 
                 // Hash the password
@@ -34,22 +38,12 @@ namespace TapNGo.Controllers
                 var b64hash = PasswordHashProvider.GetHash(registerDto.Password, b64salt);
 
                 // Create user from DTO and hashed password
-                var user = new User
-                {
-                    Id = registerDto.Id,
-                    Username = registerDto.Username,
-                    PwdHash = b64hash,
-                    PwdSalt = b64salt,
-                    FirstName = registerDto.FirstName,
-                    LastName = registerDto.LastName,
-                    Email = registerDto.Email,
-                    Phone = registerDto.Phone,
-                    RoleId = registerDto.RoleId,
-                };
+                var user = _mapper.Map<User>(registerDto);
+                user.PwdHash = b64hash;
+                user.PwdSalt = b64salt;
 
                 // Add user and save changes to database
-                _context.Add(user);
-                _context.SaveChanges();
+                _userService.CreateUser(user);
 
                 // Update DTO Id to return it to the client
                 registerDto.Id = user.Id;
@@ -71,8 +65,7 @@ namespace TapNGo.Controllers
                 var genericLoginFail = "Incorrect username or password";
 
                 // Try to get a user from database
-                var existingUser = _context.Users
-                    .Include(u => u.Role)
+                var existingUser = _userService.GetAllUsers()
                     .FirstOrDefault(x => x.Username == loginDto.Username);
 
                 if (existingUser == null)

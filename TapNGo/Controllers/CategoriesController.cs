@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TapNGo.DAL.Models;
+using TapNGo.DAL.Services.CategoryService;
+using TapNGo.DAL.Services.MenuItemService;
 using TapNGo.DTOs;
 
 namespace TapNGo.Controllers
@@ -9,11 +11,13 @@ namespace TapNGo.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly TapNgoV1Context _context;
+        private readonly ICategoryService _service;
+        private readonly IMenuItemService _mservice;
         private readonly IMapper _mapper;
-        public CategoriesController(TapNgoV1Context context, IMapper mapper)
+        public CategoriesController(ICategoryService service,IMenuItemService mservice ,IMapper mapper)
         {
-            _context = context;
+            _service = service;
+            _mservice = mservice;
             _mapper = mapper;
         }
 
@@ -23,7 +27,7 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var categories = _context.MenuCategories
+                var categories = _service.GetAllCategories()
                     .Select(c =>
                     _mapper.Map<CategoryResponseDto>(c))
                     .ToList();
@@ -42,7 +46,7 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var category = _context.MenuCategories.FirstOrDefault(c => c.Id == id);
+                var category = _service.GetCategory(id);
                 if (category == null)
                 {
                     return NotFound();
@@ -70,8 +74,7 @@ namespace TapNGo.Controllers
 
             try
             {
-                _context.MenuCategories.Add(category);
-                _context.SaveChanges();
+                _service.UpdateCategory(category);
             }
             catch (Exception)
             {
@@ -88,13 +91,16 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var category = _context.MenuCategories.FirstOrDefault(c => c.Id == id);
+                var category = _service.GetCategory(id);
                 if (category == null)
                 {
                     return NotFound();
                 }
                 category.Name = value.Name;
-                _context.SaveChanges();
+                _mapper.Map(value, category);
+                
+                _service.UpdateCategory(category);
+
                 return Ok(category);
             }
             catch (Exception)
@@ -109,22 +115,23 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var category = _context.MenuCategories.FirstOrDefault(c => c.Id == id);
+                var category = _service.GetCategory(id);
                 if (category == null)
                 {
                     return NotFound();
                 }
 
-                var hasItems = _context.MenuItems.Any(m => m.Id == id);
-                if (hasItems)
+                var hasItems = _mservice.GetAllMenuItems().Where(m => m.Id == id);
+                if (hasItems.Any())
                 {
                     return BadRequest("Cannot delete category with existing items.");
                 }
 
-                _context.MenuCategories.Remove(category);
-                _context.SaveChanges();
+                _service.DeleteCategory(id);
 
-                return Ok(category);
+                var dto = _mapper.Map<CategoryUpdateDto>(category);
+
+                return Ok(dto);
             }
             catch (Exception)
             {

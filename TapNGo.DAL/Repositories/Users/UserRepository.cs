@@ -39,7 +39,9 @@ namespace TapNGo.DAL.Repositories.Users
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users.ToList();
+            return _context.Users
+                .Include(u => u.Role)
+                .ToList();
         }
 
         public User? GetById(int id)

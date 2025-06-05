@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
+using TapNGo.DAL.SessionModels;
+using TapNGo.Models;
 
 namespace TapNGo.DAL.Repositories.Orders
 {
@@ -50,5 +52,30 @@ namespace TapNGo.DAL.Repositories.Orders
             _context.Orders.Update(item);   
             _context.SaveChanges();
         }
+
+        public void CreateOrderWithItems(List<CartItem> items, int? userId, string? note = null)
+        {
+            var order = new Order
+            {
+                UserId = userId,
+                Status = 1,
+                Note = note,
+                TotalPrice = items.Sum(i => i.Price * i.Quantity),
+                OrderItems = new List<OrderItem>()
+            };
+
+            foreach (var item in items)
+            {
+                order.OrderItems.Add(new OrderItem
+                {
+                    MenuItemId = item.MenuItemId,
+                    Quantity = item.Quantity,
+                });
+            }
+
+            _context.Orders.Add(order);
+            _context.SaveChanges();
+        }
+
     }
 }

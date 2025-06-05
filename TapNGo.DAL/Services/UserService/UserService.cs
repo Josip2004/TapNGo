@@ -20,5 +20,7 @@ namespace TapNGo.DAL.Services.UserService
         public User? GetUser(int id) => _repository.GetById(id);
 
         public void UpdateUser(User user) => _repository.Update(user);
+        public User? GetByUsername(string username) => _repository.GetByUsername(username);
+
     }
 }

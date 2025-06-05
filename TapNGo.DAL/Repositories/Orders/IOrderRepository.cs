@@ -1,4 +1,5 @@
 ﻿using TapNGo.DAL.Models;
+using TapNGo.DAL.SessionModels;
 
 namespace TapNGo.DAL.Repositories.Orders
 {
@@ -9,5 +10,6 @@ namespace TapNGo.DAL.Repositories.Orders
         void Add(Order item);
         void Update(Order item);
         void Delete(int id);
+        public void CreateOrderWithItems(List<CartItem> items, int? userId = null, string? note = null);
     }
 }

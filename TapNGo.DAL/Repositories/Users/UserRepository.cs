@@ -54,5 +54,11 @@ namespace TapNGo.DAL.Repositories.Users
             _context.Users.Update(user);
             _context.SaveChanges();
         }
+
+        public User? GetByUsername(string username)
+        {
+            return _context.Users
+                .FirstOrDefault(u => u.Username == username);
+        }
     }
 }

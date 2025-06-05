@@ -10,7 +10,6 @@ namespace TapNGo.DTOs
         public string? Note { get; set; }
 
         [Column(TypeName = "decimal(18, 0)")]
-        public decimal TotalPrice { get; set; }
 
         public List<OrderItemDTO> OrderItems { get; set; } = new();
     }

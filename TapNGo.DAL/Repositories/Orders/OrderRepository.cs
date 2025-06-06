@@ -44,7 +44,10 @@ namespace TapNGo.DAL.Repositories.Orders
 
         public Order? GetById(int id)
         {
-            return _context.Orders.Find(id);
+            return _context.Orders
+                    .Include(o => o.OrderItems)
+                        .ThenInclude(oi => oi.MenuItem)
+                    .FirstOrDefault(o => o.Id == id);
         }
 
         public void Update(Order item)

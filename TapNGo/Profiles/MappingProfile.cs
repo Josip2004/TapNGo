@@ -22,6 +22,11 @@ namespace TapNGo.Profiles
 
             CreateMap<Review, ReviewResponseDTO>().ReverseMap();
             CreateMap<Review, ReviewCreateDTO>().ReverseMap();
+
+            CreateMap<Order, OrderResponseDTO>().ReverseMap();
+            CreateMap<Order, OrderCreateDTO>().ReverseMap();
+            CreateMap<Order, OrderUpdateDTO>().ReverseMap();
+            CreateMap<OrderItem, OrderItemDTO>().ReverseMap();
         }
     }
 }

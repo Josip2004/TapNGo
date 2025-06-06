@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
+using TapNGo.DAL.Services.OrderService;
 using TapNGo.DTOs;
 using TapNGo.Models;
 
@@ -10,11 +12,13 @@ namespace TapNGo.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly TapNgoV1Context _context;
+        private readonly IMapper _mapper;
+        private readonly IOrderService _orderService;
 
-        public OrderController(TapNgoV1Context context)
+        public OrderController(IMapper mapper, IOrderService orderService)
         {
-            _context = context;
+            _mapper = mapper;
+            _orderService = orderService;
         }
 
         // GET: api/Order
@@ -23,15 +27,9 @@ namespace TapNGo.Controllers
         {
             try
             {
-                var orders = _context.Orders
-                    .Select(o => new OrderResponseDTO
-                    {
-                        Id = o.Id,
-                        UserId = o.UserId,
-                        Status = o.Status,
-                        TotalPrice = o.TotalPrice,
-                        Note = o.Note
-                    }).ToList();
+                var orders = _orderService.GetAllOrders()
+                    .Select(o => _mapper.Map<OrderResponseDTO>(o))
+                    .ToList();
 
                 return Ok(orders);
             }
@@ -42,37 +40,17 @@ namespace TapNGo.Controllers
         }
 
         // GET: api/Order/5
-        [HttpGet("{id?}")]
-        public ActionResult<OrderResponseDTO> GetOrderById(int? id)
+        [HttpGet("{id}")]
+        public ActionResult<OrderResponseDTO> GetOrderById(int id)
         {
-            if (id == null)
-                return NotFound("Order ID must be provided.");
-
             try
             {
-                var order = _context.Orders
-                    .Include(o => o.OrderItems)
-                        .ThenInclude(oi => oi.MenuItem)
-                    .FirstOrDefault(o => o.Id == id.Value);
+                var order = _orderService.GetOrder(id);
 
                 if (order == null)
                     return NotFound();
 
-                var response = new OrderResponseDTO
-                {
-                    Id = order.Id,
-                    UserId = order.UserId,
-                    Status = order.Status,
-                    TotalPrice = order.TotalPrice,
-                    Note = order.Note,
-                    OrderItems = order.OrderItems.Select(oi => new OrderItemDetailDTO
-                    {
-                        MenuItemId = oi.MenuItemId,
-                        Quantity = oi.Quantity ?? 1,
-                        MenuItemName = oi.MenuItem?.Name
-                    }).ToList()
-                };
-
+                var response = _mapper.Map<OrderResponseDTO>(order);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -81,66 +59,36 @@ namespace TapNGo.Controllers
             }
         }
 
-
         // POST: api/Order
         [HttpPost]
         public ActionResult<OrderResponseDTO> CreateOrder([FromBody] OrderCreateDTO dto)
         {
             try
             {
-                var user = _context.Users.Find(dto.UserId);
-                if (user == null)
-                    return BadRequest("User not found.");
-
-                if (dto.OrderItems == null || !dto.OrderItems.Any())
-                    return BadRequest("Order must contain at least one item.");
-
-                decimal totalPrice = 0;
-                var orderItems = new List<OrderItem>();
-
                 foreach (var item in dto.OrderItems)
                 {
-                    var menuItem = _context.MenuItems.Find(item.MenuItemId);
-                    if (menuItem == null)
-                        return BadRequest($"MenuItem with ID {item.MenuItemId} not found.");
-
-                    totalPrice += menuItem.Price * item.Quantity;
-
-                    orderItems.Add(new OrderItem
-                    {
-                        MenuItemId = item.MenuItemId,
-                        Quantity = item.Quantity
-                    });
+                    if (item.Quantity < 1)
+                        return BadRequest($"Quantity must be at least 1 for MenuItemId: {item.MenuItemId}.");
                 }
 
-                var order = new Order
+                var order = _mapper.Map<Order>(dto);
+
+                decimal totalPrice = 0;
+                foreach (var item in order.OrderItems)
                 {
-                    UserId = dto.UserId,
-                    Note = dto.Note,
-                    Status = 0, 
-                    TotalPrice = totalPrice,
-                    OrderItems = orderItems
-                };
+                    var menuItem = item.MenuItem;
+                    if (menuItem == null)
+                        return BadRequest($"MenuItem with ID: {item.MenuItemId} not found.");
 
-                _context.Orders.Add(order);
-                _context.SaveChanges();
+                    totalPrice += menuItem.Price * (item.Quantity ?? 1);
+                }
 
-                var orderResponse = new OrderResponseDTO
-                {
-                    Id = order.Id,
-                    UserId = order.UserId,
-                    Status = order.Status,
-                    TotalPrice = order.TotalPrice,
-                    Note = order.Note,
-                    OrderItems = order.OrderItems.Select(oi => new OrderItemDetailDTO
-                    {
-                        MenuItemId = oi.MenuItemId,
-                        Quantity = oi.Quantity ?? 1,
-                        MenuItemName = oi.MenuItem?.Name 
-                    }).ToList()
-                };
+                order.TotalPrice = totalPrice;
 
-                return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, orderResponse);
+                _orderService.CreateOrder(order);
+
+                var response = _mapper.Map<OrderResponseDTO>(order);
+                return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, response);
             }
             catch (Exception ex)
             {
@@ -148,51 +96,39 @@ namespace TapNGo.Controllers
             }
         }
 
-
         // PUT: api/Order/5
         [HttpPut("{id}")]
         public IActionResult UpdateOrder(int id, [FromBody] OrderUpdateDTO dto)
         {
             try
             {
-                var order = _context.Orders
-                    .Include(o => o.OrderItems)
-                    .FirstOrDefault(o => o.Id == id);
-
-                if (order == null)
-                    return NotFound();
-
-                order.Status = dto.Status;
-                order.Note = dto.Note;
-
-                
-                if (dto.OrderItems != null && dto.OrderItems.Any())
+                foreach (var item in dto.OrderItems)
                 {
-                    decimal newTotal = 0;
-                    var newOrderItems = new List<OrderItem>();
-
-                    foreach (var item in dto.OrderItems)
-                    {
-                        var menuItem = _context.MenuItems.Find(item.MenuItemId);
-                        if (menuItem == null)
-                            return BadRequest($"MenuItem with ID {item.MenuItemId} not found.");
-
-                        newTotal += menuItem.Price * item.Quantity;
-
-                        newOrderItems.Add(new OrderItem
-                        {
-                            MenuItemId = item.MenuItemId,
-                            Quantity = item.Quantity
-                        });
-                    }
-
-                    
-                    _context.OrderItems.RemoveRange(order.OrderItems);
-                    order.OrderItems = newOrderItems;
-                    order.TotalPrice = newTotal;
+                    if (item.Quantity < 1)
+                        return BadRequest($"Quantity must be at least 1 for MenuItemId: {item.MenuItemId}.");
                 }
 
-                _context.SaveChanges();
+                var existingOrder = _orderService.GetOrder(id);
+
+                if (existingOrder == null)
+                    return NotFound();
+
+                existingOrder.OrderItems.Clear();
+                _mapper.Map(dto, existingOrder);
+
+                decimal newTotal = 0;
+                foreach (var item in existingOrder.OrderItems)
+                {
+                    var menuItem = item.MenuItem;
+                    if (menuItem == null)
+                        return BadRequest($"MenuItem with ID {item.MenuItemId} not found.");
+
+                    newTotal += menuItem.Price * (item.Quantity ?? 1);
+                }
+
+                existingOrder.TotalPrice = newTotal;
+
+                _orderService.UpdateOrder(existingOrder);
                 return NoContent();
             }
             catch (Exception ex)
@@ -201,24 +137,17 @@ namespace TapNGo.Controllers
             }
         }
 
-
         // DELETE: api/Order/5
         [HttpDelete("{id}")]
         public IActionResult DeleteOrder(int id)
         {
             try
             {
-                var order = _context.Orders
-                    .Include(o => o.OrderItems)
-                    .FirstOrDefault(o => o.Id == id);
-
+                var order = _orderService.GetOrder(id);
                 if (order == null)
                     return NotFound();
 
-                _context.OrderItems.RemoveRange(order.OrderItems);
-                _context.Orders.Remove(order);
-                _context.SaveChanges();
-
+                _orderService.DeleteOrder(id);
                 return NoContent();
             }
             catch (Exception ex)

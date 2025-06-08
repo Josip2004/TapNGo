@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json.Linq;
+using TapNGo.DAL.Models;
 using TapNGo.DAL.Services.CategoryService;
 using TapNGo.DAL.Services.MenuItemService;
 using TapNGo.DAL.Services.UserService;
-using TapNGo.Models;
 using TapNGoMVC.ViewModels;
 
 namespace TapNGoMVC.Controllers

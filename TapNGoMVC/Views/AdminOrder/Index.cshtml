@@ -1,0 +1,16 @@
+﻿@using TapNGoMVC.ViewModels
+@model AdminOrderVM
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="col p-4">
+    @foreach (var order in Model.Orders)
+    {
+        <div class="card mb-3 p-3" style="cursor: pointer;"
+             onclick="location.href='@Url.Action("Details", "AdminOrder", new { id = order.Id })'">
+            <h5>STOL: @order.TableNumber</h5>
+        </div>
+    }
+</div>
+

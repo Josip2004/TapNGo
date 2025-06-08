@@ -31,6 +31,10 @@ namespace TapNGoMVC.MappingProfiles
             CreateMap<User, UserRegisterVM>().ReverseMap();
             CreateMap<User, UserLoginVM>().ReverseMap();
 
+            CreateMap<Order, OrderVM>().ReverseMap();
+
+            CreateMap<OrderItem, OrderItemVM>()
+                .ForMember(dest => dest.MenuItemName, opt => opt.MapFrom(src => src.MenuItem.Name));
         }
     }
 }

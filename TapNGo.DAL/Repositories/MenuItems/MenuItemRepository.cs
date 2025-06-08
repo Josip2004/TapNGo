@@ -55,5 +55,12 @@ namespace TapNGo.DAL.Repositories.MenuItems
             return _context.MenuItems
              .Include(m => m.MenuCategory);
         }
+
+        public IEnumerable<MenuItem> GetItemsByCategoryId(int categoryId)
+        {
+            return _context.MenuItems
+               .Where(item => item.MenuCategoryId == categoryId)
+               .ToList();
+        }
     }
 }

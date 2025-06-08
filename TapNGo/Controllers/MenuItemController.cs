@@ -22,13 +22,13 @@ namespace TapNGo.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<MenuItemResponseDTO>> GetAllMenus([FromQuery] int? categoryID)
+        public ActionResult<IEnumerable<MenuItemResponseDTO>> GetAllMenus([FromQuery] int? id)
         {
             try
             {
                 var menu = _service.GetAllMenuItems();
-                if (categoryID != null)
-                    menu = menu.Where(m => m.Id == categoryID.Value);
+                if (id != null)
+                    menu = menu.Where(m => m.Id == id.Value);
 
                var dtos = menu.Select(m => _mapper.Map<MenuItemResponseDTO>(m)).ToList();
 

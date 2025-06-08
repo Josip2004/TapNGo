@@ -40,7 +40,7 @@ namespace TapNGoMVC.Controllers
                     return View();
                 }
 
-                // Check is password hash matches
+                // Check if password hash matches
                 var b64hash = PasswordHashProvider.GetHash(loginVM.Password, existingUser.PwdSalt);
                 if (b64hash != existingUser.PwdHash)
                 {
@@ -110,7 +110,7 @@ namespace TapNGoMVC.Controllers
         {
             try
             {
-                // Check if there is such a username in the database already
+                // Check if there is such username in the database already
                 var trimmedUsername = userVM.Username.Trim();
                 if (_userService.GetAllUsers().Any(x => x.Username.Equals(trimmedUsername)))
                 {

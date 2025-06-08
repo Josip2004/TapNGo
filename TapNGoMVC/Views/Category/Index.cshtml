@@ -1,0 +1,23 @@
+﻿@model TapNGo.ViewModels.CategoryIndexVM
+
+<div class="container mt-3 d-flex flex-column align-items-center">
+
+    <div class="card mb-3 border-dark shadow card-hover-effect"
+         onclick="location.href='@Url.Action("Specials", "Menu")'"
+         style="cursor: pointer; height: 125px; width: 90%;">
+        <div class="card-body text-center d-flex align-items-center justify-content-center">
+            <h5 class="card-title mb-0">Ponuda dana</h5>
+        </div>
+    </div>
+
+    @foreach (var cat in Model.Categories)
+    {
+        <div class="card mb-3 border-dark shadow-sm card-hover-effect"
+             onclick="location.href='@Url.Action("Index", "Menu", new { categoryId = cat.Id })'"
+             style="cursor: pointer; height: 100px; width: 90%;">
+            <div class="card-body text-center d-flex align-items-center justify-content-center">
+                <h5 class="card-title mb-0">@cat.Name</h5>
+            </div>
+        </div>
+    }
+</div>

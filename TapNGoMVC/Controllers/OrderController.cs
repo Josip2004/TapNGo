@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TapNGo.DAL.Services.MenuItemService;
 using TapNGo.DAL.Services.OrderService;
 using TapNGo.DAL.Services.UserService;
 using TapNGo.DAL.SessionModels;
@@ -30,7 +28,7 @@ namespace TapNGoMVC.Controllers
         public ActionResult Index()
         {
             var items = _cartService.GetItems();
-            var total = items.Sum(i => i.Quantity *  i.Price);  
+            var total = items.Sum(i => i.Quantity *  i.Price);
             ViewBag.Total = total;
 
 

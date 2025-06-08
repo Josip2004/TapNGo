@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
-using TapNGo.Models;
 
 namespace TapNGo.DAL.Repositories.MenuItems
 {

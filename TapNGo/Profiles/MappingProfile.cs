@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using TapNGo.DAL.Models;
 using TapNGo.DTOs;
-using TapNGo.Models;
 
 namespace TapNGo.Profiles
 {

@@ -1,5 +1,5 @@
-﻿using TapNGo.DAL.Repositories.MenuItems;
-using TapNGo.Models;
+﻿using TapNGo.DAL.Models;
+using TapNGo.DAL.Repositories.MenuItems;
 
 namespace TapNGo.DAL.Services.MenuItemService
 {

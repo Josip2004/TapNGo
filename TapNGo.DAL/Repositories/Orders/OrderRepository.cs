@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
 using TapNGo.DAL.SessionModels;
-using TapNGo.Models;
 
 namespace TapNGo.DAL.Repositories.Orders
 {

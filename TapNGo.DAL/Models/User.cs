@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TapNGo.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace TapNGo.DAL.Models;
 

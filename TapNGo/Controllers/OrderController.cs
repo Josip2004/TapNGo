@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
 using TapNGo.DAL.Services.MenuItemService;
 using TapNGo.DAL.Services.OrderService;
 using TapNGo.DTOs;
-using TapNGo.Models;
 
 namespace TapNGo.Controllers
 {

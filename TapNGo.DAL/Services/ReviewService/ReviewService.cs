@@ -1,5 +1,5 @@
-﻿using TapNGo.DAL.Repositories.Reviews;
-using TapNGo.Models;
+﻿using TapNGo.DAL.Models;
+using TapNGo.DAL.Repositories.Reviews;
 
 namespace TapNGo.DAL.Services.ReviewService
 {

@@ -1,6 +1,5 @@
 ﻿using TapNGo.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
 using TapNGo.DAL.Security;
 using TapNGo.DAL.Services.UserService;

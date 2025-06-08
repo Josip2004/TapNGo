@@ -1,4 +1,4 @@
-﻿using TapNGo.Models;
+﻿using TapNGo.DAL.Models;
 
 namespace TapNGo.DAL.Services.MenuItemService
 {

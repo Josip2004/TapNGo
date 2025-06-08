@@ -27,6 +27,12 @@ namespace TapNGo.Profiles
             CreateMap<Order, OrderCreateDTO>().ReverseMap();
             CreateMap<Order, OrderUpdateDTO>().ReverseMap();
             CreateMap<OrderItem, OrderItemDTO>().ReverseMap();
+
+            CreateMap<OrderItem, OrderItemDetailDTO>()
+                .ForMember(dest => dest.MenuItemName, opt => opt.MapFrom(src => src.MenuItem.Name))
+                .ForMember(dest => dest.PricePerItem, opt => opt.MapFrom(src => src.MenuItem.Price))
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity ?? 0));
+
         }
     }
 }

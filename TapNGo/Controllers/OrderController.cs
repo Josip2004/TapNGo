@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TapNGo.DAL.Models;
+using TapNGo.DAL.Services.MenuItemService;
 using TapNGo.DAL.Services.OrderService;
 using TapNGo.DTOs;
 using TapNGo.Models;
@@ -14,11 +15,14 @@ namespace TapNGo.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IOrderService _orderService;
+        private readonly IMenuItemService _menuItemService;
 
-        public OrderController(IMapper mapper, IOrderService orderService)
+        public OrderController(IMapper mapper, IOrderService orderService, IMenuItemService menuItemService)
         {
             _mapper = mapper;
             _orderService = orderService;
+            _menuItemService = menuItemService;
+
         }
 
         // GET: api/Order
@@ -76,7 +80,7 @@ namespace TapNGo.Controllers
                 decimal totalPrice = 0;
                 foreach (var item in order.OrderItems)
                 {
-                    var menuItem = item.MenuItem;
+                    var menuItem = _menuItemService.GetMenuItem(item.MenuItemId);
                     if (menuItem == null)
                         return BadRequest($"MenuItem with ID: {item.MenuItemId} not found.");
 

@@ -1,5 +1,4 @@
 ﻿using TapNGo.DAL.Models;
-using TapNGo.Models;
 
 namespace TapNGoMVC.ViewModels
 {

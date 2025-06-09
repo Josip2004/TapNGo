@@ -51,6 +51,7 @@
             </form>
 
             <form asp-controller="Order" asp-action="Confirm" method="post">
+                <input type="hidden" name="categoryId" value="@TempData["LastCategoryId"]" />
                 <div class="form-group mb-2">
                     <label for="note">Napomena uz narudžbu:</label>
                     <textarea name="note" id="note" class="form-control" rows="3"></textarea>

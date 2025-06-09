@@ -46,3 +46,4 @@
         $("#total-price").text(total.toFixed(2) + " €");
     }
 });
+

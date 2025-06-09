@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TapNGoMVC.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/review.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -97,6 +98,36 @@
         </div>
     </div>
 
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reviewModalLabel">RECENZIJA</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="reviewComment" class="form-label">Komentar:</label>
+                    <textarea id="reviewComment" class="form-control mb-3" rows="3" placeholder="Komentar..."></textarea>
+
+                    <div class="star-rating text-center mb-3">
+                        <span class="star" data-value="1">&#9734;</span>
+                        <span class="star" data-value="2">&#9734;</span>
+                        <span class="star" data-value="3">&#9734;</span>
+                        <span class="star" data-value="4">&#9734;</span>
+                        <span class="star" data-value="5">&#9734;</span>
+                    </div>
+
+                    <input type="hidden" id="rating" value="0" />
+                    <input type="hidden" id="orderId" value="@TempData["NewOrderId"]" />
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ODUSTANI</button>
+                    <button type="button" class="btn btn-primary" id="confirmReviewBtn">POTVRDI</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="border-top bg-info text-light footer text-muted px-1 py-2">
         <div class="container-fluid d-flex justify-content-between w-100 flex-wrap">
             <button class="btn btn-outline-light w-20" type="button">
@@ -123,6 +154,7 @@
 
     <script>
         $(document).ready(function () {
+            //Waiter
             $('#confirmWaiterBtn').click(function () {
                 var note = $('#note').val();
 
@@ -139,8 +171,23 @@
                     }
                 });
             });
+
+            //Review
+            const showReview = '@TempData["ShowReviewModal"]' === 'True';
+
+            if(showReview){
+                const modalElement = document.getElementById('reviewModal');
+
+                if(modalElement){
+                    const reviewModal = new bootstrap.Modal(modalElement);
+                    reviewModal.show();
+                }
+            }
         });
     </script>
+
+    <script src="~/js/review.js" asp-append-version="true" defer></script>
+
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

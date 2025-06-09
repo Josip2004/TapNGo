@@ -10,6 +10,6 @@ namespace TapNGo.DAL.Repositories.Orders
         void Add(Order item);
         void Update(Order item);
         void Delete(int id);
-        public void CreateOrderWithItems(List<CartItem> items, int? userId = null, string? note = null);
+        public int CreateOrderWithItems(List<CartItem> items, int? userId = null, string? note = null);
     }
 }

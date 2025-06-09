@@ -55,7 +55,7 @@ namespace TapNGo.DAL.Repositories.Orders
             _context.SaveChanges();
         }
 
-        public void CreateOrderWithItems(List<CartItem> items, int? userId, string? note = null)
+        public int CreateOrderWithItems(List<CartItem> items, int? userId, string? note = null)
         {
             var order = new Order
             {
@@ -75,8 +75,11 @@ namespace TapNGo.DAL.Repositories.Orders
                 });
             }
 
+
             _context.Orders.Add(order);
             _context.SaveChanges();
+
+            return order.Id;
         }
 
     }

@@ -90,7 +90,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="dino" class="nav-link text-white">
+                    <a asp-controller="AdminReview" asp-action="Index"
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminReview" ? "active text-white" : "text-white")">
                         <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
                             <use xlink:href="#reviews"></use>
                         </svg>

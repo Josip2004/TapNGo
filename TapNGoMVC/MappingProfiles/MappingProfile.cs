@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using TapNGo.DAL.Models;
 using TapNGo.DTOs;
-using TapNGo.Models;
 using TapNGo.ViewModels;
 using TapNGoMVC.ViewModels;
 
@@ -40,6 +39,13 @@ namespace TapNGoMVC.MappingProfiles
 
             CreateMap<OrderItem, OrderItemVM>()
                 .ForMember(dest => dest.MenuItemName, opt => opt.MapFrom(src => src.MenuItem.Name));
+
+            CreateMap<ReviewVM, Review>()
+                .ForMember(dest => dest.User, opt => opt.Ignore())
+                .ForMember(dest => dest.Order, opt => opt.Ignore())
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.UserId, opt => opt.Ignore());
+
         }
     }
 }

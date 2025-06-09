@@ -6,7 +6,7 @@
         const name = $(this).data('name');
         const price = $(this).data('price');
 
-        $.post('/Cart/Add', { itemId: id, name: name, price: price }, () => {
+        $.post('/Cart/Add', { itemId: id, name: name, price: price, categoryId: getCategoryIdFromUrl() }, () => {
             let qtySpan = $(".quantity[data-id='" + id + "']");
             let current = parseInt(qtySpan.text()) || 0;
             qtySpan.text(current + 1);
@@ -37,4 +37,11 @@
         });
         $("#total-price").text(total.toFixed(2) + " €");
     }
+
+    function getCategoryIdFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get("categoryId");
+    }
 });
+
+

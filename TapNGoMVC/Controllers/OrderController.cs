@@ -60,12 +60,20 @@ namespace TapNGoMVC.Controllers
             }
 
 
-            _service.CreateOrderWithItems(items, userId, note);
+            int orderId = _service.CreateOrderWithItems(items, userId, note);
             _cartService.SaveCart(new List<CartItem>());
 
             TempData["Message"] = "Vaša narudžba je zaprimljena!";
-            return RedirectToAction("Index", "Menu");
-        }
+            TempData["ShowReviewModal"] = true;
+            TempData["NewOrderId"] = orderId;
 
+            int? categoryId = null;
+            if (int.TryParse(Request.Form["categoryId"], out int parsedCategoryId))
+            {
+                categoryId = parsedCategoryId;
+            }
+
+            return RedirectToAction("Index", "Menu", new {categoryId = categoryId});
+        }
     }
 }

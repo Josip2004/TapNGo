@@ -25,30 +25,32 @@ namespace TapNGoMVC.Controllers
             _categoryService = categoryService;
         }
         // GET: MenuController
-        public ActionResult Index(int categoryId)
-        {
-            var categories = _categoryService.GetAllCategories()
-                    .FirstOrDefault(c => c.Id == categoryId);
-
-            var items = _service.GetAllMenuItems()
-                    .Where(i => i.MenuCategoryId == categoryId)
-                    .ToList();
-
-            var itemVM = _mapper.Map<List<MenuVM>>(items);
-
-            var cartItems = _cartService.GetItems();
-
-            foreach (var ci in cartItems)
+            public ActionResult Index(int categoryId)
             {
-                var match = cartItems.FirstOrDefault(ci => ci.MenuItemId == ci.MenuItemId);
-                if (match != null)
-                {
-                    ci.Quantity = match.Quantity;
-                }
-            }
+                var categories = _categoryService.GetAllCategories()
+                        .FirstOrDefault(c => c.Id == categoryId);
 
-            return View(itemVM);
-        }
+                var items = _service.GetAllMenuItems()
+                        .Where(i => i.MenuCategoryId == categoryId)
+                        .ToList();
+
+                var itemVM = _mapper.Map<List<MenuVM>>(items);
+
+                var cartItems = _cartService.GetItems();
+
+                foreach (var item in itemVM)
+                {
+                    var match = cartItems.FirstOrDefault(ci => ci.MenuItemId == item.Id);
+                    if (match != null)
+                    {
+                        item.Quantity = match.Quantity;
+                    }
+                }
+                ViewBag.Total = cartItems.Sum(i => i.Price * i.Quantity);
+
+
+                return View(itemVM);
+            }
 
         // GET: MenuController/Details/5
         public ActionResult Details(int id)
@@ -62,69 +64,6 @@ namespace TapNGoMVC.Controllers
             var itemVM = _mapper.Map<MenuVM>(item); 
 
             return View(itemVM);
-        }
-
-        // GET: MenuController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: MenuController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: MenuController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: MenuController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: MenuController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: MenuController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

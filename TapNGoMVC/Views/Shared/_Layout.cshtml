@@ -128,23 +128,27 @@
         </div>
     </div>
 
+    @{
+        var customCategories = new List<(int Id, string Name)>
+            {
+                (1, "Gazirana"),
+                (2, "Alkoholna"),
+                (3, "Kokteli"),
+                (4, "Sokovi")
+            };
+    }
+
     <footer class="border-top bg-info text-light footer text-muted px-1 py-2">
         <div class="container-fluid d-flex justify-content-between w-100 flex-wrap">
-            <button class="btn btn-outline-light w-20" type="button">
-                Pića
-            </button>
-
-            <button class="btn btn-outline-light w-20" type="button">
-                Hrana
-            </button>
-
-            <button class="btn btn-outline-light w-20" type="button">
-                Vina
-            </button>
-
-            <button class="btn btn-outline-light w-20" type="button">
-                Kokteli
-            </button>
+            @foreach (var category in customCategories)
+            {
+                <a class="btn btn-outline-light w-20"
+                   asp-controller="Menu"
+                   asp-action="Index"
+                   asp-route-categoryId="@category.Id">
+                    @category.Name
+                </a>
+            }
         </div>
     </footer>
 

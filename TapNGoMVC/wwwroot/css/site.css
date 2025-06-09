@@ -24,3 +24,11 @@ body {
 .w-20 {
     width: 20% !important;
 }
+
+.card-hover-effect {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card-hover-effect:hover {
+    transform: scale(0.97);
+}

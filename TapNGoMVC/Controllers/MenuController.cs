@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TapNGo.DAL.Services.CategoryService;
 using TapNGo.DAL.Services.MenuItemService;
 using TapNGo.DAL.SessionServices;
 using TapNGoMVC.ViewModels;
@@ -11,20 +12,29 @@ namespace TapNGoMVC.Controllers
     {
         private readonly IMenuItemService _service;
         private readonly ICartItemService _cartService;
+        private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
 
         public MenuController(IMenuItemService service,
             ICartItemService cartService,
+            ICategoryService categoryService,
             IMapper mapper)
         {
             _mapper = mapper;
             _service = service;
             _cartService = cartService;
+            _categoryService = categoryService;
         }
         // GET: MenuController
-        public ActionResult Index()
+        public ActionResult Index(int categoryId)
         {
-            var items = _service.GetAllMenuItems();
+            var categories = _categoryService.GetAllCategories()
+                    .FirstOrDefault(c => c.Id == categoryId);
+
+            var items = _service.GetAllMenuItems()
+                    .Where(i => i.MenuCategoryId == categoryId)
+                    .ToList();
+
             var itemVM = _mapper.Map<List<MenuVM>>(items);
 
             var cartItems = _cartService.GetItems();

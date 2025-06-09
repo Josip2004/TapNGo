@@ -1,0 +1,66 @@
+﻿@model List<TapNGo.DAL.SessionModels.CartItem>
+@{
+    ViewData["Title"] = "Košarica";
+}
+
+<div class="container">
+
+    <h3 class="text-center my-3">TOTAL: <span id="total-price">@ViewBag.Total €</span></h3>
+
+    <div class="card p-3 shadow">
+        <h4>POPIS NARUDŽBE</h4>
+
+        @foreach (var item in Model)
+        {
+            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                <strong>@item.Name</strong>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button"
+                            class="btn btn-outline-danger btn-sm remove-btn"
+                            data-id="@item.MenuItemId"
+                            data-price="@item.Price">
+                        -
+                    </button>
+
+                    <span class="quantity"
+                          data-id="@item.MenuItemId"
+                          data-price="@item.Price">
+                        @item.Quantity
+                    </span>
+
+                    <button type="button"
+                            class="btn btn-outline-success btn-sm add-btn"
+                            data-id="@item.MenuItemId"
+                            data-name="@item.Name"
+                            data-price="@item.Price">
+                        +
+                    </button>
+                </div>
+
+                <span class="item-total"
+                      data-id="@item.MenuItemId">
+                    @(item.Price * item.Quantity) €
+                </span>
+            </div>
+        }
+
+        <div class="d-flex justify-content-between mt-3">
+            <form asp-action="Clear" method="post">
+                <button class="btn btn-outline-danger">X (očisti)</button>
+            </form>
+
+            <form asp-controller="Order" asp-action="Confirm" method="post">
+                <div class="form-group mb-2">
+                    <label for="note">Napomena uz narudžbu:</label>
+                    <textarea name="note" id="note" class="form-control" rows="3"></textarea>
+                </div>
+                <button class="btn btn-dark">NARUČI</button>
+            </form>
+        </div>
+    </div>
+    @section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="~/js/cart.js" asp-append-version="true"></script>
+    }
+</div>

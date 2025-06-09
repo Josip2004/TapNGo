@@ -1,59 +1,55 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TapNGo.DAL.SessionModels;
-using TapNGo.DAL.SessionServices;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using TapNGo.DAL.Services.OrderService;
+using TapNGoMVC.ViewModels;
 
 namespace TapNGoMVC.Controllers
 {
-    public class CartController : Controller
+    public class AdminOrderController : Controller
     {
-        private readonly ICartItemService _cartService;
+         private readonly IOrderService _service;
+         private readonly IMapper _mapper;
 
-        public CartController(ICartItemService cartService)
+        public AdminOrderController(IOrderService service, IMapper mapper)
         {
-            _cartService = cartService;
+            _service = service;
+            _mapper = mapper;
         }
 
-        // GET: CartController
+        // GET: AdminOrderController
         public ActionResult Index()
         {
-            var items = _cartService.GetItems();
-            return View(items);
+            var orders = _service.GetAllOrders();
+
+            var model = new AdminOrderVM
+            {
+                Orders = _mapper.Map<List<OrderVM>>(orders)
+            };
+
+            return View(model);
         }
 
-        [HttpPost]
-        public IActionResult Add(int itemId, string name, decimal price)
-        {
-            _cartService.AddItem(itemId, name, price);
-            return Ok(); 
-        }
-
-        [HttpPost]
-        public IActionResult Remove(int itemId)
-        {
-            _cartService.RemoveItem(itemId);
-            return Ok(); 
-        }
-
-        [HttpPost]
-        public IActionResult Clear()
-        {
-            _cartService.SaveCart(new List<CartItem>());
-            return RedirectToAction("Index");
-        }
-
-        // GET: CartController/Details/5
+        // GET: AdminOrderController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var order = _service.GetOrder(id);
+
+            if(order == null) 
+                NotFound();
+
+            var orderVm = _mapper.Map<OrderVM>(order);  
+
+            return View(orderVm);
         }
 
-        // GET: CartController/Create
+        // GET: AdminOrderController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: CartController/Create
+        // POST: AdminOrderController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -68,13 +64,13 @@ namespace TapNGoMVC.Controllers
             }
         }
 
-        // GET: CartController/Edit/5
+        // GET: AdminOrderController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: CartController/Edit/5
+        // POST: AdminOrderController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -89,13 +85,13 @@ namespace TapNGoMVC.Controllers
             }
         }
 
-        // GET: CartController/Delete/5
+        // GET: AdminOrderController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: CartController/Delete/5
+        // POST: AdminOrderController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

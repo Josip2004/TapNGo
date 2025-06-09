@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TapNGo.DAL.Services.UserService;
 using TapNGoMVC.ViewModels;
 using TapNGo.DAL.Models;
 using TapNGo.DAL.Security;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using TapNGo.DTOs;
 
 namespace TapNGoMVC.Controllers

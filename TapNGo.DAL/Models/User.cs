@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TapNGo.Models;
 
 namespace TapNGo.DAL.Models;
 

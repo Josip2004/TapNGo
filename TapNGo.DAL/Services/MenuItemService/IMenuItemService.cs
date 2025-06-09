@@ -1,4 +1,4 @@
-﻿using TapNGo.Models;
+﻿using TapNGo.DAL.Models;
 
 namespace TapNGo.DAL.Services.MenuItemService
 {
@@ -10,5 +10,6 @@ namespace TapNGo.DAL.Services.MenuItemService
         void UpdateMenuItem(MenuItem item);
         void DeleteMenuItem(int id);
         IEnumerable<MenuItem> GetWithCategory();
+        IEnumerable<MenuItem> GetItemsByCategoryId(int categoryId);
     }
 }

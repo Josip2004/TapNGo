@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TapNGo.DAL.Models;
 
-namespace TapNGo.Models;
+namespace TapNGo.DAL.Models;
 
 [Table("MenuItem")]
 public partial class MenuItem
@@ -19,7 +18,7 @@ public partial class MenuItem
 
     public string? Description { get; set; }
 
-    [Column(TypeName = "decimal(18, 0)")]
+    [Column(TypeName = "decimal(18, 2)")]
     public decimal Price { get; set; }
 
     [Column("Image_url")]

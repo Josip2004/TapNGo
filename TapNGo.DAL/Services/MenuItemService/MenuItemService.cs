@@ -1,5 +1,5 @@
-﻿using TapNGo.DAL.Repositories.MenuItems;
-using TapNGo.Models;
+﻿using TapNGo.DAL.Models;
+using TapNGo.DAL.Repositories.MenuItems;
 
 namespace TapNGo.DAL.Services.MenuItemService
 {
@@ -22,5 +22,6 @@ namespace TapNGo.DAL.Services.MenuItemService
         public void UpdateMenuItem(MenuItem item) => _repository.Update(item);
 
         public IEnumerable<MenuItem> GetWithCategory() => _repository.GetWithCategory();
+        public IEnumerable<MenuItem> GetItemsByCategoryId(int categoryId) => _repository.GetItemsByCategoryId(categoryId);
     }
 }

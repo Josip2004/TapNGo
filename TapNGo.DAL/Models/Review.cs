@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using TapNGo.DAL.Models;
 
-namespace TapNGo.Models;
+namespace TapNGo.DAL.Models;
 
 [Table("Review")]
 public partial class Review

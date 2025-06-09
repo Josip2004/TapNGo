@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TapNGo.DAL.SessionModels;
+﻿using TapNGo.DAL.SessionModels;
 
 namespace TapNGo.DAL.SessionServices
 {

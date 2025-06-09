@@ -33,7 +33,9 @@
                 </form>
 
                 <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-outline-light flex-shrink-0" type="button">Košarica</button>
+                    <form asp-controller="Order" asp-action="Index" method="post">
+                         <button class="btn btn-outline-light flex-shrink-0">Košarica</button>
+                    </form>
 
                     @if (!isLoggedIn)
                     {
@@ -53,7 +55,46 @@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+
+            @if (TempData["Message"] != null)
+            {
+                <div class="fixed-top" style="top: 70px; z-index: 1050;">
+                    <div class="container mt-2">
+                        <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
+                            @TempData["Message"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zatvori"></button>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div style="position: fixed; bottom: 140px; right: 20px; z-index: 10;">
+                <button type="button" class="btn btn-outline-primary rounded-circle px-3 py-2"
+                        data-bs-toggle="modal" data-bs-target="#waiterModal"
+                        style="width: 80px; height: 80px;">
+                    Konobar
+                </button>
+            </div>
         </main>
+
+        <div class="modal fade" id="waiterModal" tabindex="-1" aria-labelledby="waiterModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="waiterModalLabel">Pozivanje konobara</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="note">NAPOMENA:</label>
+                        <textarea id="note" class="form-control" rows="4"></textarea>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ODUSTANI</button>
+                        <button type="button" class="btn btn-primary" id="confirmWaiterBtn">POTVRDI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer class="border-top bg-info text-light footer text-muted px-1 py-2">
@@ -79,6 +120,28 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#confirmWaiterBtn').click(function () {
+                var note = $('#note').val();
+
+                $.ajax({
+                    url: '@Url.Action("CallWaiter", "Waiter")',
+                    type: 'POST',
+                    data: { note: note },
+                    success: function () {
+                        $('#waiterModal').modal('hide');
+                        alert("Konobar je pozvan!");
+                    },
+                    error: function () {
+                        alert("Greška pri pozivanju konobara.");
+                    }
+                });
+            });
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

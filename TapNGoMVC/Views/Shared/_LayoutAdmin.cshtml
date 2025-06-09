@@ -1,16 +1,140 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@{
+    var userName = ViewContext.HttpContext.User?.Identity?.Name;
+    var isLoggedIn = ViewContext.HttpContext.User?.Identity?.IsAuthenticated ?? false;
+    var firstName = ViewContext.HttpContext.User?.FindFirst("FirstName")?.Value;
+    var lastName = ViewContext.HttpContext.User?.FindFirst("LastName")?.Value;
+    var role = ViewContext.HttpContext.User?.FindFirst(ClaimTypes.Role)?.Value;
+}
 
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/sidebars.css" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .layout-wrapper {
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
-    <div>
-        @RenderBody()
-        <div>
-            <a href="https://slobodnadalmacija.hr/">sljaka - klikni me</a>
+
+    <!-- SVG simboli za ikone -->
+    
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+        <symbol id="bootstrap" viewBox="0 0 118 94">
+            <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M24.509 0c-6.733 0-11.715 5.893-11.492 12.284..."></path>
+        </symbol>
+        <svg xmlns="http://www.w3.org/2000/svg" id="home" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" id="mapTable" fill="currentColor" class="bi bi-radar">
+            <path d="M6.634 1.135A7 7 0 0 1 15 8a.5.5 0 0 1-1 0 6 6 0 1 0-6.5 5.98v-1.005A5 5 0 1 1 13 8a.5.5 0 0 1-1 0 4 4 0 1 0-4.5 3.969v-1.011A2.999 2.999 0 1 1 11 8a.5.5 0 0 1-1 0 2 2 0 1 0-2.5 1.936v-1.07a1 1 0 1 1 1 0V15.5a.5.5 0 0 1-1 0v-.518a7 7 0 0 1-.866-13.847" />
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" id="reviews" fill="currentColor" class="bi bi-chat-left-text" viewBox="0 0 16 16">
+            <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+            <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" id="editMenu" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" id="userIcon" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+        </svg>
+        
+    </svg>
+
+    <!-- Layout wrapper -->
+    <div class="d-flex layout-wrapper">
+
+        <!-- Sidebar -->
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <svg class="bi pe-none me-2" width="40" height="32" aria-hidden="true">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+                <span class="fs-4">Admin page</span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <a asp-controller="AdminOrder" asp-action="Index"
+                   class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminOrder" ? "active text-white" : "text-white")">
+                    <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+                        <use xlink:href="#home"></use>
+                    </svg>
+                    Orders
+                </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link text-white">
+                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+                            <use xlink:href="#mapTable"></use>
+                        </svg>
+                        Map
+                    </a>
+                </li>
+                <li>
+                    <a href="dino" class="nav-link text-white">
+                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+                            <use xlink:href="#reviews"></use>
+                        </svg>
+                        Reviews
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="AdminMenu" asp-action="Index" 
+                    class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminMenu" ? "active text-white" : "text-white")">
+                        <svg class="bi pe-none me-2" width="16" height="16" aria-hidden="true">
+                            <use xlink:href="#editMenu"></use>
+                        </svg>
+                        Edit Menu
+                    </a>
+                </li>
+                <!-- Dodaj ostale stavke -->
+            </ul>
+            <hr>
+            <div class="dropdown">
+                <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <svg class="bi me-3" width="32" height="32" fill="currentColor" aria-hidden="true">
+                        <use xlink:href="#userIcon"></use>
+                    </svg>
+                    <strong>@userName</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="#">New project...</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" asp-controller="User" asp-action="Logout" >Sign out</a></li>
+                </ul>
+            </div>
         </div>
+
+        <!-- Glavni sadržaj -->
+        <div class="flex-grow-1 p-4 overflow-auto">
+            @RenderBody()
+        </div>
+
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/sidebars.js"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -46,6 +46,9 @@ namespace TapNGoMVC.MappingProfiles
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.UserId, opt => opt.Ignore());
 
+            CreateMap<Review, ReviewVM>();
+             
+
         }
     }
 }

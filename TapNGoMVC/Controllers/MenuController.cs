@@ -25,32 +25,41 @@ namespace TapNGoMVC.Controllers
             _categoryService = categoryService;
         }
         // GET: MenuController
-            public ActionResult Index(int categoryId)
+        public ActionResult Index(int? categoryId, string? searchTerm)
+        {
+
+            var items = _service.GetAllMenuItems()
+                   .AsQueryable();
+
+            if (categoryId.HasValue && categoryId.Value != 0)
             {
-                var categories = _categoryService.GetAllCategories()
-                        .FirstOrDefault(c => c.Id == categoryId);
-
-                var items = _service.GetAllMenuItems()
-                        .Where(i => i.MenuCategoryId == categoryId)
-                        .ToList();
-
-                var itemVM = _mapper.Map<List<MenuVM>>(items);
-
-                var cartItems = _cartService.GetItems();
-
-                foreach (var item in itemVM)
-                {
-                    var match = cartItems.FirstOrDefault(ci => ci.MenuItemId == item.Id);
-                    if (match != null)
-                    {
-                        item.Quantity = match.Quantity;
-                    }
-                }
-                ViewBag.Total = cartItems.Sum(i => i.Price * i.Quantity);
-
-
-                return View(itemVM);
+                items = items.Where(i => i.MenuCategoryId == categoryId.Value);
             }
+
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                var lowerTerm = searchTerm.ToLower();   
+                items = items.Where(i => i.Name.ToLower().Contains(lowerTerm));
+            }
+
+            var itemVM = _mapper.Map<List<MenuVM>>(items.ToList());
+
+            var cartItems = _cartService.GetItems();
+
+            foreach (var item in itemVM)
+            {
+                var match = cartItems.FirstOrDefault(ci => ci.MenuItemId == item.Id);
+                if (match != null)
+                {
+                    item.Quantity = match.Quantity;
+                }
+            }
+            ViewBag.Total = cartItems.Sum(i => i.Price * i.Quantity);
+
+
+            return View(itemVM);
+        }
 
         // GET: MenuController/Details/5
         public ActionResult Details(int id)

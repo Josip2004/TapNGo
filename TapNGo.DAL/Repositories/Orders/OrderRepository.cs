@@ -55,7 +55,7 @@ namespace TapNGo.DAL.Repositories.Orders
             _context.SaveChanges();
         }
 
-        public int CreateOrderWithItems(List<CartItem> items, int? userId, string? note = null)
+        public int CreateOrderWithItems(List<CartItem> items, int tableNum, int? userId, string? note = null)
         {
             var order = new Order
             {
@@ -63,6 +63,7 @@ namespace TapNGo.DAL.Repositories.Orders
                 Status = 1,
                 Note = note,
                 TotalPrice = items.Sum(i => i.Price * i.Quantity),
+                TableNumber = tableNum,
                 OrderItems = new List<OrderItem>()
             };
 

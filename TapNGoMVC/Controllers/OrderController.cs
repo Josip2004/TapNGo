@@ -43,7 +43,7 @@ namespace TapNGoMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Confirm(string? note)
+        public IActionResult Confirm(string? note, int tableNum)
         {
             var items = _cartService.GetItems();
             if (!items.Any())
@@ -60,7 +60,7 @@ namespace TapNGoMVC.Controllers
             }
 
 
-            int orderId = _service.CreateOrderWithItems(items, userId, note);
+            int orderId = _service.CreateOrderWithItems(items, tableNum, userId, note);
             _cartService.SaveCart(new List<CartItem>());
 
             TempData["Message"] = "Vaša narudžba je zaprimljena!";

@@ -18,6 +18,9 @@ namespace TapNGoMVC.ViewModels
 
         public string? ImageUrl { get; set; }
 
+        [ValidateNever]
+        public IFormFile? ImageFile { get; set; }
+
         [Display(Name = "Kategorija")]
         [Required]
         public int MenuCategoryId { get; set; }

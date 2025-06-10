@@ -22,6 +22,6 @@ namespace TapNGo.DAL.Services.OrderService
         public Order? GetOrder(int id) => _repository.GetById(id);
 
         public void UpdateOrder(Order order) => _repository.Update(order);
-        public int CreateOrderWithItems(List<CartItem> items, int? userId, string? note = null) => _repository.CreateOrderWithItems(items, userId, note);
+        public int CreateOrderWithItems(List<CartItem> items, int tableNum, int? userId, string? note = null) => _repository.CreateOrderWithItems(items, tableNum, userId, note);
     }
 }

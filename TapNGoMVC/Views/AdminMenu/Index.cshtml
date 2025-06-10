@@ -20,7 +20,10 @@
     {
         <div class="card mb-2 p-2 d-flex flex-row" style="cursor: pointer;"
                 onclick = "location.href='@Url.Action("Edit", new { id = item.Id})'">
-            <img src="@item.ImageUrl" width="100" class="me-3" />
+            @if (!string.IsNullOrEmpty(item.ImageUrl))
+            {
+                <img src="@item.ImageUrl" alt="Menu Item Image" style="width: 100px;" class="me-3" />
+            }
             <div>
                 <h5>@item.Name - @item.Price €</h5>
                 <p>Opis: @item.Description</p>

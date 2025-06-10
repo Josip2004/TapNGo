@@ -102,7 +102,15 @@ namespace TapNGoMVC.Controllers
 
                     return View(menuVm);    
                 }
-    
+
+                if (menuVm.ImageFile != null && menuVm.ImageFile.Length > 0)
+                {
+                    using var ms = new MemoryStream();
+                    menuVm.ImageFile.CopyTo(ms);
+                    var imageBytes = ms.ToArray();
+                    menuVm.ImageUrl = $"data:{menuVm.ImageFile.ContentType};base64,{Convert.ToBase64String(imageBytes)}";
+                }
+
                 var newMenu = _mapper.Map<MenuItem>(menuVm);
 
                 _service.CreateMenuItem(newMenu);
@@ -147,6 +155,14 @@ namespace TapNGoMVC.Controllers
                     PopulateUsers(menuVm);
 
                     return View(menuVm);
+                }
+
+                if (menuVm.ImageFile != null && menuVm.ImageFile.Length > 0)
+                {
+                    using var ms = new MemoryStream();
+                    menuVm.ImageFile.CopyTo(ms);
+                    var imageBytes = ms.ToArray();
+                    menuVm.ImageUrl = $"data:{menuVm.ImageFile.ContentType};base64,{Convert.ToBase64String(imageBytes)}";
                 }
 
                 var menuDb = _service.GetMenuItem(menuVm.Id);   

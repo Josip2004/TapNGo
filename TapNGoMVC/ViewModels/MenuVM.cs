@@ -1,4 +1,6 @@
-﻿namespace TapNGoMVC.ViewModels
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace TapNGoMVC.ViewModels
 {
     public class MenuVM
     {
@@ -11,6 +13,9 @@
         public decimal Price { get; set; }
 
         public string? ImageUrl { get; set; }
+
+        [ValidateNever]
+        public IFormFile? ImageFile { get; set; }
 
         public string CategoryName { get; set; } = null!;
 

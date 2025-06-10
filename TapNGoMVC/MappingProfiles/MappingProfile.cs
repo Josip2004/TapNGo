@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using TapNGo.DAL.Models;
 using TapNGo.DTOs;
-using TapNGo.ViewModels;
+using TapNGo.Models;
+using TapNGo.Models;
 using TapNGoMVC.ViewModels;
 
 namespace TapNGoMVC.MappingProfiles

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using TapNGo.DAL.Services.CategoryService;
-using TapNGo.ViewModels;
+using TapNGo.Models;
 using TapNGo.DAL.Models;
 
 namespace TapNGoMVC.Controllers

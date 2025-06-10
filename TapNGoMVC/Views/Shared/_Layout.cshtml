@@ -20,86 +20,89 @@
 </head>
 <body>
     <header class="fixed-header">
-        <nav class="navbar bg-info text-light shadow-sm border-bottom box-shadow mb-3">
-            <div class="container-fluid d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <nav class="navbar text-light shadow-sm border-bottom box-shadow" style="background-color: #001f3f;">
+            <div class="container-fluid">
+                <div class="row w-100 align-items-center g-2">
 
-                <button class="btn btn-outline-light flex-shrink-0" type="button">Jezik</button>
-
-                <form method="get" asp-controller="Menu" asp-action="Index"
-                      class="flex-grow-1" style="min-width: 200px; max-width: 600px;">
-                    <input type="hidden" name="categoryId" value="@ViewBag.CategoryId" />
-
-                    <div class="input-group input-group-sm">
-                        <input type="text" name="searchTerm" class="form-control" placeholder="Search..."
-                               value="@(ViewBag.SearchTerm )" />
-                        <button class="btn btn-outline-light" type="submit">🔍</button>
+                    <div class="col-auto">
+                        <button class="btn btn-outline-light flex-shrink-0" type="button">Jezik</button>
                     </div>
-                </form>
 
-                <div class="d-flex align-items-center gap-2">
-                    <form asp-controller="Order" asp-action="Index" method="post">
-                         <button class="btn btn-outline-light flex-shrink-0">Košarica</button>
-                    </form>
+                    <div class="col">
+                        <form method="get" asp-controller="Menu" asp-action="Index">
+                            <input type="hidden" name="categoryId" value="@ViewBag.CategoryId" />
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="searchTerm" class="form-control" placeholder="Search..." value="@(ViewBag.SearchTerm )" />
+                                <button class="btn btn-outline-light" type="submit">🔍</button>
+                            </div>
+                        </form>
+                    </div>
 
-                    @if (!isLoggedIn)
-                    {
-                        <a class="btn btn-outline-light flex-shrink-0" asp-controller="User" asp-action="Login">Login</a>
-                        <a class="btn btn-outline-light flex-shrink-0" asp-controller="User" asp-action="Register">Register</a>
-                    }
-                    else
-                    {
-                        <span class="badge bg-light text-dark">@firstName @lastName (@role)</span>
-                        <a class="btn btn-outline-light flex-shrink-0" asp-controller="User" asp-action="Logout">Logout</a>
-                    }
+                    <div class="col-auto">
+                        <div class="d-flex align-items-center gap-2">
+                            <form asp-controller="Order" asp-action="Index" method="post">
+                                <button class="btn btn-outline-light flex-shrink-0" aria-label="Košarica">🛒</button>
+                            </form>
+
+                            @if (!isLoggedIn)
+                            {
+                                <a class="btn btn-outline-light flex-shrink-0" asp-controller="User" asp-action="Login">Login</a>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-dark text-nowrap">@firstName @lastName (@role)</span>
+                                <a class="btn btn-outline-light flex-shrink-0" asp-controller="User" asp-action="Logout">Logout</a>
+                            }
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </nav>
     </header>
 
+    <main role="main">
+        @RenderBody()
 
-        <main role="main" class="pb-3">
-            @RenderBody()
-
-            @if (TempData["Message"] != null)
-            {
-                <div class="fixed-top" style="top: 70px; z-index: 1050;">
-                    <div class="container mt-2">
-                        <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
-                            @TempData["Message"]
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zatvori"></button>
-                        </div>
+        @if (TempData["Message"] != null)
+        {
+            <div class="fixed-top" style="top: 70px; z-index: 1050;">
+                <div class="container mt-2">
+                    <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
+                        @TempData["Message"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zatvori"></button>
                     </div>
                 </div>
-            }
-
-            <div style="position: fixed; bottom: 140px; right: 20px; z-index: 10;">
-                <button type="button" class="btn btn-primary rounded-circle px-3 py-2"
-                        data-bs-toggle="modal" data-bs-target="#waiterModal"
-                        style="width: 80px; height: 80px;">
-                    Konobar
-                </button>
             </div>
-        </main>
+        }
 
-        <div class="modal fade" id="waiterModal" tabindex="-1" aria-labelledby="waiterModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content rounded">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="waiterModalLabel">Pozivanje konobara</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
-                    </div>
-                    <div class="modal-body">
-                        <label for="note">NAPOMENA:</label>
-                        <textarea id="note" class="form-control" rows="4"></textarea>
-                    </div>
-                    <div class="modal-footer d-flex justify-content-between">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ODUSTANI</button>
-                        <button type="button" class="btn btn-primary" id="confirmWaiterBtn">POTVRDI</button>
-                    </div>
+        <div style="position: fixed; bottom: 140px; right: 20px; z-index: 10;">
+            <button type="button" class="btn btn-outline-warning rounded-circle fw-bold text-dark d-flex align-items-center justify-content-center"
+                    data-bs-toggle="modal" data-bs-target="#waiterModal"
+                    style="width: 80px; height: 80px;">
+                Konobar
+            </button>
+        </div>
+    </main>
+
+    <div class="modal fade" id="waiterModal" tabindex="-1" aria-labelledby="waiterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="waiterModalLabel">Pozivanje konobara</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+                </div>
+                <div class="modal-body">
+                    <label for="note">NAPOMENA:</label>
+                    <textarea id="note" class="form-control" rows="4"></textarea>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ODUSTANI</button>
+                    <button type="button" class="btn btn-primary" id="confirmWaiterBtn">POTVRDI</button>
                 </div>
             </div>
         </div>
-  
+    </div>
 
     <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -133,15 +136,15 @@
 
     @{
         var customCategories = new List<(int Id, string Name)>
-            {
-                (1, "Gazirana"),
-                (2, "Alkoholna"),
-                (3, "Kokteli"),
-                (4, "Sokovi")
-            };
+    {
+    (1, "Gazirana"),
+    (2, "Alkoholna"),
+    (3, "Kokteli"),
+    (4, "Sokovi")
+    };
     }
 
-    <footer class="border-top bg-info text-light footer text-muted px-1 py-2 fixed-footer">
+    <footer class="border-top text-light footer text-muted px-1 py-2 fixed-footer" style="background-color: #001f3f;">
         <div class="container-fluid d-flex justify-content-between w-100 flex-wrap">
             @foreach (var category in customCategories)
             {
@@ -194,7 +197,6 @@
     </script>
 
     <script src="~/js/review.js" asp-append-version="true" defer></script>
-
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -22,9 +22,9 @@ body {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
-    
+
 .w-20 {
     width: 20% !important;
 }
@@ -33,9 +33,9 @@ body {
     transition: transform 0.2s ease-in-out;
 }
 
-.card-hover-effect:hover {
-    transform: scale(0.97);
-}
+    .card-hover-effect:hover {
+        transform: scale(0.97);
+    }
 
 .fixed-header {
     position: fixed;
@@ -54,7 +54,7 @@ body {
 main {
     flex: 1;
     overflow-y: auto;
-    margin-top: 70px; 
-    margin-bottom: 70px; 
-    padding: 1rem; 
+    margin-top: 70px;
+    margin-bottom: 70px;
+    padding: 1rem;
 }

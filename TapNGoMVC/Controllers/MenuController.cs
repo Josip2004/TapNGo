@@ -60,6 +60,11 @@ namespace TapNGoMVC.Controllers
 
             return View(itemVM);
         }
+        //ZA PONUDU DANA:
+        public IActionResult Specials()
+        {
+            return View();
+        }
 
         // GET: MenuController/Details/5
         public ActionResult Details(int id)

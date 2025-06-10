@@ -1,4 +1,4 @@
-﻿namespace TapNGo.ViewModels
+﻿namespace TapNGo.Models
 {
     public class CategoryIndexVM
     {

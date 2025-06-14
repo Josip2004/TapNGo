@@ -43,8 +43,16 @@ namespace TapNGoMVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Confirm(string? note, int tableNum)
+        public IActionResult Confirm(string? note)
         {
+            int? tableNum = HttpContext.Session.GetInt32("TableNumber");
+
+            if (!tableNum.HasValue)
+            {
+                TempData["Error"] = "Oprostite, ovu funkciju možete koristiti samo dok ste u kafiću.";
+                return RedirectToAction("Index", "Menu");
+            }
+
             var items = _cartService.GetItems();
             if (!items.Any())
                 return RedirectToAction("Index", "Menu");
@@ -59,8 +67,7 @@ namespace TapNGoMVC.Controllers
                     userId = user.Id;
             }
 
-
-            int orderId = _service.CreateOrderWithItems(items, tableNum, userId, note);
+            int orderId = _service.CreateOrderWithItems(items, tableNum.Value, userId, note);
             _cartService.SaveCart(new List<CartItem>());
 
             TempData["Message"] = "Vaša narudžba je zaprimljena!";
@@ -73,7 +80,7 @@ namespace TapNGoMVC.Controllers
                 categoryId = parsedCategoryId;
             }
 
-            return RedirectToAction("Index", "Menu", new {categoryId = categoryId});
+            return RedirectToAction("Index", "Menu", new { categoryId = categoryId });
         }
     }
 }

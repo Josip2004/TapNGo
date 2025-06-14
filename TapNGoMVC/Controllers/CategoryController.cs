@@ -28,5 +28,12 @@ namespace TapNGoMVC.Controllers
 
             return View(model);
         }
+
+        public IActionResult HomeQrCode(int table)
+        {
+            HttpContext.Session.SetInt32("TableNumber", table);
+
+            return RedirectToAction("Index", "Category");
+        }
     }
 }

@@ -75,6 +75,17 @@
                 </div>
             </div>
         }
+        @if (TempData["Error"] != null)
+        {
+            <div class="fixed-top" style="top: 70px; z-index: 1050;">
+                <div class="container mt-2">
+                    <div class="alert alert-danger alert-dismissible fade show shadow" role="alert">
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zatvori"></button>
+                    </div>
+                </div>
+            </div>
+        }
 
         <div style="position: fixed; bottom: 140px; right: 20px; z-index: 10;">
             <button type="button" class="btn btn-outline-warning rounded-circle fw-bold text-dark d-flex align-items-center justify-content-center"

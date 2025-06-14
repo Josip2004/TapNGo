@@ -1,5 +1,4 @@
-﻿// DTOs/OrderResponseDTO.cs
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TapNGo.DTOs
 {
@@ -11,9 +10,9 @@ namespace TapNGo.DTOs
 
         public int Status { get; set; }
 
-        [Column(TypeName = "decimal(18, 0)")]
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalPrice { get; set; }
-
+        public int TableNumber { get; set; }
         public string? Note { get; set; }
 
         public List<OrderItemDetailDTO> OrderItems { get; set; } = new();

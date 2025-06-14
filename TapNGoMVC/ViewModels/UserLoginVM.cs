@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TapNGo.DTOs
+namespace TapNGoMVC.ViewModels
 {
     public class UserLoginVM
     {

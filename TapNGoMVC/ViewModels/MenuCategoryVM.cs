@@ -1,4 +1,4 @@
-﻿namespace TapNGo.Models
+﻿namespace TapNGoMVC.ViewModels
 {
     public class MenuCategoryVM
     {

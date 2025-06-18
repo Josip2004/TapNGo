@@ -92,7 +92,8 @@ namespace TapNGoMVC.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Menu");
+
+            return RedirectToAction("Index", "Category");
         }
 
         // GET: UserController/Register

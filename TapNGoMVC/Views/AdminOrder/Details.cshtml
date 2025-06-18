@@ -29,7 +29,7 @@
                 <div class="d-flex justify-content-between mt-4">
                     <a asp-action="Index" class="btn btn-outline-secondary">ODUSTANI</a>
 
-                    <form asp-action="Confirm" asp-route-id="@Model.Id" method="post">
+            <form asp-action="Confirm" asp-controller="AdminOrder" asp-route-orderId="@Model.Id" method="post">
                         <button type="submit" class="btn btn-success">POTVRDI</button>
                     </form>
                 </div>

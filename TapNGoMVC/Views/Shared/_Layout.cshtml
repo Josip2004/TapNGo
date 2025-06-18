@@ -62,7 +62,7 @@
 
         @if (TempData["Message"] != null)
         {
-            <div class="fixed-top" style="top: 70px; z-index: 1050;">
+            <div id="messageAlert" class="fixed-top" style="top: 70px; z-index: 1050;">
                 <div class="container mt-2">
                     <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
                         @TempData["Message"]
@@ -73,7 +73,7 @@
         }
         @if (TempData["Error"] != null)
         {
-            <div class="fixed-top" style="top: 70px; z-index: 1050;">
+            <div id="errorAlert" class="fixed-top" style="top: 70px; z-index: 1050;">
                 <div class="container mt-2">
                     <div class="alert alert-danger alert-dismissible fade show shadow" role="alert">
                         @TempData["Error"]
@@ -82,9 +82,20 @@
                 </div>
             </div>
         }
+        @if (TempData["CalledWaiter"] != null)
+        {
+            <div id="calledWaiterAlert" class="fixed-top" style="top: 70px; z-index: 1050;">
+                <div class="container mt-2">
+                    <div class="alert alert-success alert-dismissible fade show shadow" role="alert">
+                        @TempData["CalledWaiter"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zatvori"></button>
+                    </div>
+                </div>
+            </div>
+        }
 
         <div style="position: fixed; bottom: 140px; right: 20px; z-index: 10;">
-            <button type="button" class="btn btn-outline-warning rounded-circle fw-bold text-dark d-flex align-items-center justify-content-center"
+            <button type="button" class="waiterBtn btn btn-outline-warning rounded-circle fw-bold text-dark d-flex align-items-center justify-content-center"
                     data-bs-toggle="modal" data-bs-target="#waiterModal"
                     style="width: 80px; height: 80px;">
                 Konobar
@@ -170,10 +181,17 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-        $(document).ready(function () {
-            //Waiter
+                $(document).ready(function () {
+            let waiterButtonRef = null;
+
+            $('.waiterBtn').click(function () {
+                waiterButtonRef = $(this);
+            });
+
             $('#confirmWaiterBtn').click(function () {
-                var note = $('#note').val();
+                if (!waiterButtonRef) return;
+
+                const note = $('#note').val();
 
                 $.ajax({
                     url: '@Url.Action("CallWaiter", "Waiter")',
@@ -181,7 +199,14 @@
                     data: { note: note },
                     success: function () {
                         $('#waiterModal').modal('hide');
-                        alert("Konobar je pozvan!");
+
+                        waiterButtonRef.prop('disabled', true);
+                        waiterButtonRef.text('Konobar dolazi');
+
+                        setTimeout(function () {
+                            waiterButtonRef.prop('disabled', false);
+                            waiterButtonRef.text('Pozovi konobara');
+                        }, 60000);
                     },
                     error: function () {
                         alert("Greška pri pozivanju konobara.");
@@ -189,20 +214,22 @@
                 });
             });
 
-            //Review
+            // Review modal
             const showReview = '@TempData["ShowReviewModal"]' === 'True';
-
-            if(showReview){
+            if (showReview) {
                 const modalElement = document.getElementById('reviewModal');
-
-                if(modalElement){
+                if (modalElement) {
                     const reviewModal = new bootstrap.Modal(modalElement);
                     reviewModal.show();
                 }
             }
         });
+
     </script>
 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/js/clinetLayout.js"></script>
     <script src="~/js/review.js" asp-append-version="true" defer></script>
 
     @await RenderSectionAsync("Scripts", required: false)

@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/css/adminMap.css" rel="stylesheet" />
+
+<div id="table-map" class="grid">
+    @for (int i = 1; i <= 20; i++)
+    {
+        <div class="table" id="table-@i">@i</div>
+    }
+</div>
+
+<div id="notification" class="notification"></div>
+
+<div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderDetailsModalLabel">Detalji narudžbe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Broj stola:</strong> <span id="tableNumber"></span></li>
+                    <li class="list-group-item"><strong>Napomena:</strong> <span id="note"></span></li>
+                    <li class="list-group-item"><strong>Status:</strong> <span id="status"></span></li>
+                    <li class="list-group-item"><strong>Ukupna cijena:</strong> <span id="totalPrice"></span> €</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zatvori</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/js/map.js"></script>

@@ -1,5 +1,4 @@
-﻿console.log("review.js loaded");
-let selectedRating = 0;
+﻿let selectedRating = 0;
 
 document.querySelectorAll('.star-rating .star').forEach(star => {
     star.addEventListener('click', function () {

@@ -17,7 +17,7 @@ namespace TapNGoMVC.Controllers
         }
         public IActionResult Index()
         {
-            var reviews = _service.GetAllReviews();
+            var reviews = _service.GetAllReviews().OrderByDescending(r => r.Id);
 
             var model = new AdminReviewVM
             {

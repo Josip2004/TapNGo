@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddHttpContextAccessor();  
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 
 builder.Services.AddAuthentication()
@@ -29,6 +29,12 @@ builder.Services.AddAuthentication()
       options.SlidingExpiration = true;
       options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
   });
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
 
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -48,6 +54,9 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICartItemService, CartService>();
 
+builder.Services.AddSignalR();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -55,6 +64,7 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
 
 app.UseRouting();

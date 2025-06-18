@@ -26,5 +26,6 @@ namespace TapNGoMVC.ViewModels
         [Phone(ErrorMessage = "Provide a correct phone number")]
         public string Phone { get; set; }
         public int RoleId { get; set; }
+        public string EntryPassword { get; set; }
     }
 }

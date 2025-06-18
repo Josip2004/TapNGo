@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -15,6 +15,7 @@ using TapNGo.DAL.Services.MenuItemService;
 using TapNGo.DAL.Services.OrderService;
 using TapNGo.DAL.Services.ReviewService;
 using TapNGo.DAL.Services.UserService;
+using TapNGo.Hubs.SignalR;
 using TapNGo.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -94,6 +95,20 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 
+builder.Services.AddSignalR();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5051")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 // Add EF Core DbContext
 builder.Services.AddDbContext<TapNgoV1Context>();
 
@@ -105,6 +120,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.MapHub<OrderHub>("/orderHub");
+app.MapHub<WaiterHub>("/waiterHub");
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();

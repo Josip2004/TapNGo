@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNet.SignalR.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TapNGo.DAL.Services.OrderService;
@@ -8,8 +9,8 @@ namespace TapNGoMVC.Controllers
 {
     public class AdminOrderController : Controller
     {
-         private readonly IOrderService _service;
-         private readonly IMapper _mapper;
+        private readonly IOrderService _service;
+        private readonly IMapper _mapper;
 
         public AdminOrderController(IOrderService service, IMapper mapper)
         {
@@ -20,7 +21,7 @@ namespace TapNGoMVC.Controllers
         // GET: AdminOrderController
         public ActionResult Index()
         {
-            var orders = _service.GetAllOrders();
+            var orders = _service.GetAllOrders().OrderByDescending(t => t.Id);
 
             var model = new AdminOrderVM
             {
@@ -35,18 +36,29 @@ namespace TapNGoMVC.Controllers
         {
             var order = _service.GetOrder(id);
 
-            if(order == null) 
+            if (order == null)
                 NotFound();
 
-            var orderVm = _mapper.Map<OrderVM>(order);  
+            var orderVm = _mapper.Map<OrderVM>(order);
 
             return View(orderVm);
         }
+
+
 
         // GET: AdminOrderController/Create
         public ActionResult Create()
         {
             return View();
+        }
+
+        // GET: AdminOrderController/Create
+        [HttpPost]
+        public ActionResult Confirm(int orderId)
+        {
+            _service.DeleteOrder(orderId);
+            return RedirectToAction(nameof(Index));
+
         }
 
         // POST: AdminOrderController/Create

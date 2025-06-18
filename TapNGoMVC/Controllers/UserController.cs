@@ -14,8 +14,10 @@ namespace TapNGoMVC.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        public UserController(IUserService userService, IMapper mapper)
+        private readonly IConfiguration _configuration;
+        public UserController(IUserService userService, IMapper mapper,IConfiguration configuration)
         {
+            _configuration = configuration;
             _userService = userService;
             _mapper = mapper;
         }
@@ -27,7 +29,6 @@ namespace TapNGoMVC.Controllers
             {
                 var genericLoginFail = "Incorrect username or password";
 
-                // Try to get a user from database
                 var existingUser = _userService.GetAllUsers()
                     .FirstOrDefault(x => x.Username == loginVM.Username);
 
@@ -37,7 +38,6 @@ namespace TapNGoMVC.Controllers
                     return View();
                 }
 
-                // Check if password hash matches
                 var b64hash = PasswordHashProvider.GetHash(loginVM.Password, existingUser.PwdSalt);
                 if (b64hash != existingUser.PwdHash)
                 {
@@ -68,7 +68,7 @@ namespace TapNGoMVC.Controllers
                 if (loginVM.ReturnUrl != null)
                     return LocalRedirect(loginVM.ReturnUrl);
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "AdminOrder");
             }
             catch (Exception ex)
             {
@@ -92,7 +92,7 @@ namespace TapNGoMVC.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Menu");
         }
 
         // GET: UserController/Register
@@ -107,23 +107,30 @@ namespace TapNGoMVC.Controllers
         {
             try
             {
-                // Check if there is such username in the database already
+                if (!ModelState.IsValid)
+                {
+                    return View();
+                }
+
+                if(userVM.EntryPassword != _configuration["EntryPassword"])
+                {
+                    ModelState.AddModelError("", "Invalid entry password");
+                    return View();
+                }
+
                 var trimmedUsername = userVM.Username.Trim();
                 if (_userService.GetAllUsers().Any(x => x.Username.Equals(trimmedUsername)))
                 {
                     ModelState.AddModelError("", "Username already exists");
                     return View();
                 }
-                // Hash the password
                 var b64salt = PasswordHashProvider.GetSalt();
                 var b64hash = PasswordHashProvider.GetHash(userVM.Password, b64salt);
 
-                // Create user from DTO and hashed password
                 var user = _mapper.Map<User>(userVM);
                 user.PwdHash = b64hash;
                 user.PwdSalt = b64salt;
 
-                // Add user and save changes to database
                 _userService.CreateUser(user);
 
                 return RedirectToAction("Login", "User");
